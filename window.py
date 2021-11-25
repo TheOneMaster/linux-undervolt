@@ -106,6 +106,10 @@ class MainWindow(Gtk.Window):
         bottom.pack_start(save_button, True, True, 1)
         bottom.pack_start(apply_button, True, True, 1)
 
+        bottom.set_margin_start(2)
+        bottom.set_margin_end(2)
+        bottom.set_margin_bottom(2)
+
         main_grid.attach(profile_box, 0, 0, 4, 1)
         main_grid.attach(scale_box, 0, 1, 4, 1)
 
@@ -154,10 +158,27 @@ class MainWindow(Gtk.Window):
     def applyUndervolt(self, widget):
         # print("Applying undervolt...")
         
-        config.applyProfile()
-        sleep(0.3)
+        code = config.applyProfile()
+        # sleep(0.3)
 
-        print("Undervolt applied.")
+        return_code = code.returncode
+
+        if not return_code:
+            dialog = Gtk.MessageDialog(
+                message_type=Gtk.MessageType.INFO,
+                buttons=Gtk.ButtonsType.OK,
+                text='Undervolt applied'
+            )
+        else:
+            dialog = Gtk.MessageDialog(
+                message_type=Gtk.MessageType.ERROR,
+                buttons=Gtk.ButtonsType.OK,
+                text='Something Failed. Undervolt not applied.'
+            )
+
+        dialog.run()
+
+        dialog.destroy()
 
     def firstTimeSetup(self):
         """

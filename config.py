@@ -101,11 +101,13 @@ def changeProfileSettings(profile: str, options: dict) -> None:
     createConfig(parser)
 
 
-def applyProfile() -> None:
+def applyProfile() -> subprocess.CompletedProcess:
 
     profile_settings = getCurrentProfileSettings()[1]
     index_map = {'0': 'cpu', '1': 'gpu', '2': 'cpu_cache', '3': 'sys_agent', '4': 'analog_io'}
     config_path = getConfigDirectory()
+    temp_file_location = os.environ['XDG_RUNTIME_DIR']
+    temp_file = os.path.join(temp_file_location, 'intel-undervolt.conf')
 
     with open(config_path, 'r') as stream:
 
@@ -127,13 +129,21 @@ def applyProfile() -> None:
                     pass
 
                 arguments = ' '.join(arguments)
+                arguments = f'{arguments}\n'
+                
                 argument_list.append(arguments)
 
-    # with open(config_path, 'w') as configFile:
-    with open(config_path, 'w') as config:
-        config.write('\n'.join(argument_list))
+    with open(temp_file, 'w') as config:
+        config.write(''.join(argument_list))
 
+    config_folder = os.path.split(config_path)[0]
 
-    command = "pkexec intel-undervolt apply"
-    subprocess.run(command, shell=True)
+    command_1 = f"mv -v {temp_file} {config_folder}"
+    command_2 = "intel-undervolt apply"
+
+    final_command = f"pkexec sh -c '{command_1} ; {command_2}'"
+    
+    final_run = subprocess.run(final_command, shell=True, stdout=subprocess.DEVNULL)
+
+    return final_run
 
