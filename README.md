@@ -10,3 +10,8 @@ To run this program, clone the repository or download it as a zip. Once extracte
 Once the GUI has been opened for the first time, it makes the user select the intel-undervolt configuration file. This is often found at /etc/intel-undervolt.conf. Once the file has been selected, this tool will create a default configuration set for 4 profiles. 
 
 Once changes have been made to a profile (by changing the slider values), the changes mst first be saved before applied. If not saved, the previous values present in the configuration file will be used. Thus, the program won't fail or throw an error message, but any change to the undervolt will not occur.
+
+What the GUI currently looks like:
+
+
+<img src="images/undervolt-tool-gui.png"></img>
