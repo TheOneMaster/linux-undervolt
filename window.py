@@ -21,7 +21,7 @@ class MainWindow(Gtk.Window):
         if not config.checkConfigExists():
             return_code = self.firstTimeSetup()
 
-            if return_code == 1:
+            if return_code == Gtk.ResponseType.CLOSE:
                 self.failed = True
                 return None
 
@@ -219,14 +219,14 @@ class MainWindow(Gtk.Window):
         folder_dialog.add_filter(filter_conf)
 
         response = folder_dialog.run()
-        folder_dialog.destroy()
+        
 
         if response == Gtk.ResponseType.OK:
             response = folder_dialog.get_filename()
             config.createConfig(undervolt_path=response)
         else:
-            self.close()
-            return 1        
+            folder_dialog.destroy()
+            self.close()        
 
         return response
 
