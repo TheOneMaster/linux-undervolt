@@ -16,9 +16,14 @@ class MainWindow(Gtk.Window):
         super().__init__(*args, **kwargs)
 
         # self.set_resizable(False)
+        self.failed = False
 
         if not config.checkConfigExists():
-            self.firstTimeSetup()
+            return_code = self.firstTimeSetup()
+
+            if return_code == 1:
+                self.failed = True
+                return None
 
         options = config.getCurrentProfileSettings()
         main_frame = self.createWidgets(options)
@@ -206,7 +211,7 @@ class MainWindow(Gtk.Window):
         """
         
         folder_dialog = Gtk.FileChooserDialog("Select intel-undervolt Config File", None, Gtk.FileChooserAction.OPEN,
-        (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        (Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
 
         filter_conf = Gtk.FileFilter()
         filter_conf.set_name("Configuration files")
@@ -214,16 +219,14 @@ class MainWindow(Gtk.Window):
         folder_dialog.add_filter(filter_conf)
 
         response = folder_dialog.run()
+        folder_dialog.destroy()
 
         if response == Gtk.ResponseType.OK:
             response = folder_dialog.get_filename()
+            config.createConfig(undervolt_path=response)
         else:
-            self.firstTimeSetup()
-
-        folder_dialog.destroy()
-
-        print(response)
-        config.createConfig(undervolt_path=response)
+            self.close()
+            return 1        
 
         return response
 

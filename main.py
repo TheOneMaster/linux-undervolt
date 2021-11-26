@@ -8,9 +8,12 @@ from window import MainWindow
 
 if __name__ == "__main__":
     root = MainWindow(title="Linux Undervolt Tool")
-    root.connect("destroy", Gtk.main_quit)
-    root.show_all()
 
-    Gtk.main()
+    if not root.failed:
+        root.connect("destroy", Gtk.main_quit)
+        root.show_all()
+        Gtk.main()
+    else:
+        pass
 
     
