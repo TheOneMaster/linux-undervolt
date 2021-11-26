@@ -26,13 +26,18 @@ class MainWindow(Gtk.Window):
         self.add(main_frame)
 
     def createWidgets(self, options: tuple) -> Gtk.Grid:
-        
+        """
+        Create the various widgets present on the main window. Any stored profile values can be passed to the constructor
+        so that the widgets retain the profile's values when starting.
+        """
         main_grid = Gtk.Grid(expand=True)
 
         active_profile = options[0]
         profile_options = options[1]
 
-        # Scale for the undervolt values
+        ##################################
+        # Scale for the undervolt values #
+        ##################################
 
         scale_box = Gtk.Box(orientation=1)
 
@@ -40,7 +45,7 @@ class MainWindow(Gtk.Window):
         scale_labels = dict(cpu='CPU', gpu='GPU', cpu_cache="CPU Cache", sys_agent="System Agent", analog_io='Analog IO')
         undervolt_scale_list = []
         
-        j = 0
+        # Create and store the scales
         for i in undervolt_hw:
             
             frame = Gtk.Box(orientation=1)
@@ -54,11 +59,8 @@ class MainWindow(Gtk.Window):
             frame.pack_start(scale, True, True, 0)
             
             scale_box.pack_start(frame, True, True, 5)
-            # scale_box.attach(label, 2, j+1, 1, 2)
-            # scale_box.attach(scale, 0, j, 5, 1)
-            undervolt_scale_list.append(scale)
             
-            # j = j+2
+            undervolt_scale_list.append(scale)
 
         undervolt_scale_list[0].connect("value-changed", self.linkScale, undervolt_scale_list[2])
         undervolt_scale_list[2].connect("value-changed", self.linkScale, undervolt_scale_list[0])
@@ -72,7 +74,9 @@ class MainWindow(Gtk.Window):
                 scale = undervolt_scale_list[index]
                 scale.set_value(int(value))
 
-        # Radio Buttons for Profiles
+        ##############################
+        # Radio Buttons for Profiles #
+        ##############################
 
         profile_box = Gtk.Box(spacing=5)
         # profile_box.set_hexpand(True)
@@ -91,9 +95,13 @@ class MainWindow(Gtk.Window):
             profile.set_hexpand(True)
             profile_box.add(profile)
 
-        # Save Button
+        ##############
+        # Bottom Bar #
+        ##############
 
         bottom = Gtk.Box(spacing=5)
+
+        # Save Button
 
         save_button = Gtk.Button(label="Save")
         save_button.connect('clicked', self.profileSettingsChange, profile_list, undervolt_scale_list)
@@ -110,6 +118,10 @@ class MainWindow(Gtk.Window):
         bottom.set_margin_end(2)
         bottom.set_margin_bottom(2)
 
+        ###############################
+        # Attach widgets to main_grid #
+        ###############################
+
         main_grid.attach(profile_box, 0, 0, 4, 1)
         main_grid.attach(scale_box, 0, 1, 4, 1)
 
@@ -118,7 +130,10 @@ class MainWindow(Gtk.Window):
         return main_grid
 
     def profileSettingsChange(self, widget, profiles: list, values: list):
-
+        """
+        This function is called when the "save" button is pressed. All values from the widgets are stored in the config file
+        when this function is called.
+        """
         profile = 0
 
         for index, prof in enumerate(profiles):
@@ -141,7 +156,10 @@ class MainWindow(Gtk.Window):
         config.changeProfileSettings(profile, settings)
 
     def profileChange(self, widget, name, scales):
-
+        """
+        This method is activated whenever the profile is changed. The config file is updated to the new profile and the widgets
+        are updated to reflect the new profile's values.
+        """
         if widget.get_active():
             config.changeProfile(str(name))
             settings = config.getProfileSettings(str(name))
@@ -156,10 +174,12 @@ class MainWindow(Gtk.Window):
             pass
 
     def applyUndervolt(self, widget):
-        # print("Applying undervolt...")
-        
+        """
+        This method is called when the "apply" button is clicked. Attempts to apply all stored config values and 
+        returns a message whether the undervolt was applied or failed.
+        """
         code = config.applyProfile()
-        # sleep(0.3)
+        sleep(0.3)
 
         return_code = code.returncode
 
@@ -181,9 +201,8 @@ class MainWindow(Gtk.Window):
         dialog.destroy()
 
     def firstTimeSetup(self):
-        """
-        This function is called only the first time the script is run. Used to initialize the default values for \n
-        the config file. Asks the user to select the intel-undervolt folder.
+        """This function is called only the first time the script is run. Used to initialize the default values for the config file.
+        \n Asks the user to select the intel-undervolt folder.
         """
         
         folder_dialog = Gtk.FileChooserDialog("Select intel-undervolt Config File", None, Gtk.FileChooserAction.OPEN,
