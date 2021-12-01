@@ -15,3 +15,9 @@ What the GUI currently looks like:
 
 
 <img src="images/undervolt-tool-gui.png"></img>
+
+### TODO:
+
+* Add buttons for toggles in intel-undervolt (daemon mode, enable)
+* Create Backup of original intel-undervolt config file for easy reset to default
+* Create power user settings toggle that enables more advanced features (independent cpu and cache voltage for example)
