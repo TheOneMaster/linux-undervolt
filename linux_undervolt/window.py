@@ -220,7 +220,6 @@ class MainWindow(Gtk.Window):
 
         response = folder_dialog.run()
         
-
         if response == Gtk.ResponseType.OK:
             response = folder_dialog.get_filename()
             config.createConfig(undervolt_path=response)

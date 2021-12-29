@@ -3,7 +3,7 @@
 import config
 import argparse
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--set-profile", type=int)
@@ -15,3 +15,6 @@ if __name__ == "__main__":
     if new_profile is not None:
         config.changeProfile(str(new_profile))
         config.applyProfile() 
+
+if __name__ == "__main__":
+    main()

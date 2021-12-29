@@ -1,12 +1,11 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
 from window import MainWindow
 
-
-if __name__ == "__main__":
+def main():
     root = MainWindow(title="Linux Undervolt Tool")
 
     if not root.failed:
@@ -16,4 +15,5 @@ if __name__ == "__main__":
     else:
         pass
 
-    
+if __name__ == "__main__":
+    main()
