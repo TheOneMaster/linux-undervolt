@@ -7,7 +7,6 @@ RELATIVE_DIR = ".config/linux-undervolt.conf"
 
 CONFIG_DIRECTORY = os.path.join(HOME, RELATIVE_DIR)
 
-
 def checkConfigExists() -> bool:
     """
     Returns a boolean value for whether the config file has already been created.
@@ -81,7 +80,7 @@ def getConfigDirectory(parser=None) -> str:
     
 
 ### Change Config functions
-def changeProfile(profile: int) -> None:
+def changeProfile(profile: str) -> None:
     "Change currently active profile to input profile"
     parser = configparser.ConfigParser()
     parser.read(CONFIG_DIRECTORY)
@@ -138,7 +137,7 @@ def applyProfile() -> subprocess.CompletedProcess:
 
     config_folder = os.path.split(config_path)[0]
 
-    command_1 = f"mv -v {temp_file} {config_folder}"
+    command_1 = f"mv {temp_file} {config_folder}"
     command_2 = "intel-undervolt apply"
 
     final_command = f"pkexec sh -c '{command_1} ; {command_2}'"
@@ -146,4 +145,5 @@ def applyProfile() -> subprocess.CompletedProcess:
     final_run = subprocess.run(final_command, shell=True, stdout=subprocess.DEVNULL)
 
     return final_run
+        
 
