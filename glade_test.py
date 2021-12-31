@@ -2,6 +2,8 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk
 
+from time import sleep
+
 import config
 
 
@@ -61,6 +63,44 @@ class MainWindow:
 
         self.scaleChange()
 
+    def saveProfile(self, _):
+
+        # Get the values from the scales
+        current_profile, current_settings = config.getCurrentProfileSettings()
+
+        new_settings = {}
+        for key in current_settings:
+
+            object_id = MainWindow.SCALE_MAP[key]
+            scale = self.builder.get_object(object_id)
+
+            new_value = scale.get_value()
+            new_value = int(new_value)
+
+            new_settings[key] =  new_value
+        
+        config.changeProfileSettings(current_profile, new_settings)
+
+    def applyProfile(self, _):
+        
+        code = config.applyProfile().returncode
+        sleep(0.3)
+
+        if not code:
+            dialog = gtk.MessageDialog(
+                message_type=gtk.MessageType.INFO,
+                buttons=gtk.ButtonsType.OK,
+                text='Undervolt applied'
+            )
+        else:
+            dialog = gtk.MessageDialog(
+                message_type=gtk.MessageType.ERROR,
+                buttons=gtk.ButtonsType.OK,
+                text='Something Failed. Undervolt not applied.'
+            )
+
+        dialog.run()
+        dialog.destroy()
 
 if __name__ == "__main__":
     
