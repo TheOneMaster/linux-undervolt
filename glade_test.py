@@ -3,6 +3,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk
 
 from time import sleep
+import os
 
 import config
 
@@ -19,9 +20,23 @@ class MainWindow:
 
     def __init__(self):
 
+        # Define instance variables
+        self.config = None
+        self.builder = gtk.Builder()
+        self.active_profile = None
+
+        # Check if this is the first time the app is run
+        if not os.path.isfile(config.CONFIG_DIRECTORY):
+            return_code = self.firstTimeSetup()
+
+            if return_code != gtk.ResponseType.OK:
+                return
+        else:
+            self.config = config.Config(created=True)
+
         # Create template and add general signals 
         gladeFile = "GUI.glade"
-        self.builder = gtk.Builder()
+        
         self.builder.add_from_file(gladeFile)
         self.builder.connect_signals(self)
 
@@ -37,7 +52,7 @@ class MainWindow:
         """
         Changes the scale values to the current profile values.
         """
-        current_settings = config.getCurrentProfileSettings()[1]
+        current_settings = self.config.getProfileSettings()
 
         for key, value in current_settings.items():
 
@@ -58,7 +73,7 @@ class MainWindow:
         for option in group_list:
             if option.get_active():
                 new_profile = option.get_label()
-                config.changeProfile(new_profile)
+                self.config.changeProfile(new_profile)
                 break
 
         self.scaleChange()
@@ -66,7 +81,7 @@ class MainWindow:
     def saveProfile(self, _):
 
         # Get the values from the scales
-        current_profile, current_settings = config.getCurrentProfileSettings()
+        current_settings = self.config.getProfileSettings()
 
         new_settings = {}
         for key in current_settings:
@@ -79,11 +94,11 @@ class MainWindow:
 
             new_settings[key] =  new_value
         
-        config.changeProfileSettings(current_profile, new_settings)
+        self.config.changeProfileSettings(new_settings)
 
     def applyProfile(self, _):
         
-        code = config.applyProfile().returncode
+        code = self.config.applyChanges().returncode
         sleep(0.3)
 
         if not code:
@@ -101,6 +116,56 @@ class MainWindow:
 
         dialog.run()
         dialog.destroy()
+
+    def firstTimeSetup(self):
+        """
+        Creates the initial files required for the application to run. This is only called the first time
+        the application is run. 
+        """
+
+        # Check whether intel-undervolt has been installed.
+
+        prereqs = config.checkPrerequisites()
+        if prereqs:
+            default_undervolt_path = '/etc/intel-undervolt.conf'
+            
+            if os.path.isfile(default_undervolt_path):
+                self.config = config.Config()
+                return gtk.ResponseType.OK
+
+            else:
+                # TODO: Add file chooser dialog for undervolt conf file
+                folder_dialog = gtk.FileChooserDialog("Select intel-undervolt Config File", None, gtk.FileChooserAction.OPEN,
+                (gtk.STOCK_CLOSE, gtk.ResponseType.CLOSE, gtk.STOCK_OPEN, gtk.ResponseType.OK))
+        
+                filter_conf = gtk.FileFilter()
+                filter_conf.set_name("Configuration files")
+                filter_conf.add_pattern("*.conf")
+                folder_dialog.add_filter(filter_conf)
+
+                response = folder_dialog.run()
+
+                if response == gtk.ResponseType.OK:
+                    response = folder_dialog.get_filename()
+                    self.config = config.Config(undervolt_file=response)
+                else:
+                    folder_dialog.destroy()
+
+                return response
+        else:
+            # TODO: Create an error dialog letting the user know what isn't installed.
+            
+            dialog = gtk.MessageDialog(
+                message_type=gtk.MessageType.ERROR,
+                buttons=gtk.ButtonsType.CLOSE,
+                text="""The prerequisites for this program have not been met. Please check whether you have the
+                required programs (intel-undervolt) properly installed."""
+            )
+
+            dialog.run()
+            dialog.destroy()
+
+            return dialog 
 
 if __name__ == "__main__":
     
