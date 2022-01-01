@@ -1,149 +1,182 @@
 import os
 import configparser
 import subprocess
+import tempfile
 
 HOME = os.environ['HOME']
-RELATIVE_DIR = ".config/linux-undervolt.conf"
+CONFIG_DIRECTORY = os.path.join(HOME, '.config/linux-undervolt.conf')
 
-CONFIG_DIRECTORY = os.path.join(HOME, RELATIVE_DIR)
+class Config:
 
-def checkConfigExists() -> bool:
-    """
-    Returns a boolean value for whether the config file has already been created.
-    """
-    
-    exists = os.path.isfile(CONFIG_DIRECTORY)
-    return exists
+    def __init__(self, created=False, undervolt_file=None):
+        """
+        docstring
+        """
 
+        # Define instance variables
+        self.parser = configparser.ConfigParser()
+        self.undervolt_file = None
+        self.active_profile = None
 
-def createConfig(options=None, **kwargs) -> None:
-    """Creates a configuration file for the program to store the profile and undervolt values.\n
-    If no options are passed into this function, a default configuration file is generated and stored.
-    """
-    if options == None:
-        options = makeDefaultConf(**kwargs)
+        if created:
+            self.parser.read(CONFIG_DIRECTORY)
+        else:
+            self.createConfig(general_options={'undervolt_file': undervolt_file})
+            self.saveChanges()
 
-    with open(CONFIG_DIRECTORY, 'w') as config_file:
-        options.write(config_file)
-
-
-def makeDefaultConf(**kwargs) -> configparser.ConfigParser:
-
-    parser = configparser.ConfigParser()
-
-    parser['SETTINGS'] = {
-        "profile": 0,
-        "undervolt-path": kwargs['undervolt_path']
-    }
-
-    profiles = [{i:0 for i in ['cpu', 'gpu', 'cpu_cache', 'sys_agent', 'analog_io']} for i in range(4)]
-
-    for index, profile in enumerate(profiles):
-        parser[str(index)] = profile
-
-    return parser
+        self.undervolt_file = self.parser['SETTINGS']['undervolt_path']
+        self.active_profile = self.parser['SETTINGS']['profile']
 
 
-### Read Config Functions
-def getCurrentProfileSettings() -> tuple:
+    def createConfig(self, exists=False, general_options=None) -> None:
+        """
+        Creates the configuration file for the application. Stores the general settings as well as profile-specific
+        information.
+        """
 
-    parser = configparser.ConfigParser()
-    parser.read(CONFIG_DIRECTORY)
-
-    current_profile = parser['SETTINGS']['profile']
-    profile_settings = getProfileSettings(current_profile, parser)
-
-    return (int(current_profile), profile_settings)
-
-
-def getProfileSettings(profile: str, parser=None) -> dict:
-    "Return a dictionary of all settings for the given profile"
-    if parser is None:
-        parser = configparser.ConfigParser()
-        parser.read(CONFIG_DIRECTORY)
-    
-    settings = parser[profile]
-    settings = dict(settings)
-
-    return settings
-
-
-def getConfigDirectory(parser=None) -> str:
-
-    if parser is None:
-        parser = configparser.ConfigParser()
-        parser.read(CONFIG_DIRECTORY)
-
-    settings = parser['SETTINGS']
-
-    return settings['undervolt-path']
-    
-
-### Change Config functions
-def changeProfile(profile: str) -> None:
-    "Change currently active profile to input profile"
-    parser = configparser.ConfigParser()
-    parser.read(CONFIG_DIRECTORY)
-
-    parser.set("SETTINGS", "profile", profile)
-
-    createConfig(parser)
-
-
-def changeProfileSettings(profile: str, options: dict) -> None:
-
-    parser = configparser.ConfigParser()
-    parser.read(CONFIG_DIRECTORY)
-
-    parser[profile] = options
-
-    createConfig(parser)
-
-
-def applyProfile() -> subprocess.CompletedProcess:
-
-    profile_settings = getCurrentProfileSettings()[1]
-    index_map = {'0': 'cpu', '1': 'gpu', '2': 'cpu_cache', '3': 'sys_agent', '4': 'analog_io'}
-    config_path = getConfigDirectory()
-    temp_file_location = os.environ['XDG_RUNTIME_DIR']
-    temp_file = os.path.join(temp_file_location, 'intel-undervolt.conf')
-
-    with open(config_path, 'r') as stream:
-
-        argument_list = []
-        for line in stream:
+        if not exists:
             
-            if line[0] in ("#", "\n"):
-                argument_list.append(line)
-            else:
+            undervolt_path = general_options.get("undervolt_path", "/etc/intel-undervolt.conf")
+            battery_switch = general_options.get("bat_switch", False)
+            battery_profile = general_options.get("bat_profile", "")
+            ac_profile = general_options.get("ac_profile", "")
 
-                arguments = line.split()
+            self.parser['SETTINGS'] = {
+                'profile': 0,
+                'undervolt_path': undervolt_path,
+                'battery_switch': battery_switch,
+                'battery_profile': battery_profile,
+                'ac_profile': ac_profile
+            }
 
-                if arguments[0] == 'undervolt':
-                    index_val = arguments[1]
-                    profile_opt = index_map[index_val]
-                    setting = profile_settings[profile_opt]
-                    arguments[-1] = setting
-                else:
-                    pass
+        profile_options = ['cpu', 'gpu', 'cpu_cache', 'sys_agent', 'analog_io']
 
-                arguments = ' '.join(arguments)
-                arguments = f'{arguments}\n'
-                
-                argument_list.append(arguments)
+        profiles = [{i:0 for i in profile_options} for j in range(4)]
 
-    with open(temp_file, 'w') as config:
-        config.write(''.join(argument_list))
+        for index, profile in enumerate(profiles):
+            self.parser[str(index)] = profile
 
-    config_folder = os.path.split(config_path)[0]
+    ################################# 
+    # Settings and Profiles methods # 
+    #################################
 
-    command_1 = f"mv {temp_file} {config_folder}"
-    command_2 = "intel-undervolt apply"
+    def getProfileSettings(self, profile_number=None) -> dict:
+        """
+        Return a dictionary of the various profile settings for the selected profile. If no profile is provided,
+        the function defaults to the currently active profile.
+        """
 
-    final_command = f"pkexec sh -c '{command_1} ; {command_2}'"
-    
-    final_run = subprocess.run(final_command, shell=True, stdout=subprocess.DEVNULL)
+        if profile_number is None:
+            profile_number = self.parser['SETTINGS']['profile']
 
-    return final_run
+        settings = self.parser[profile_number]
+        settings = dict(settings)
+
+        return settings
+
+    def changeSettings(self, setting: str, new_value: str) -> None:
+
+        self.parser['SETTINGS'][setting] = new_value
+
+    def changeProfile(self, profile_number: str) -> None:
+        """
+        Change the active profile of the tool.
+        """
+        self.parser['SETTINGS']['profile'] = profile_number
+        self.saveChanges()
+
+    def changeProfileSettings(self, settings: dict, profile=None) -> None:
+        """
+        Change the undervolt settings for a profile.
+
+        Arguments:
+        settings              - A dictionary containing the various settings values
+        profile(default None) - A string containing the profile number for the settings to be applied to.
+                                If no value is provided, defaults to the active profile. 
+        """
+        if profile is None:
+            profile = self.parser['SETTINGS']['profile']
+
+        self.parser[profile] = settings
+
+        self.saveChanges()
+
+    def saveChanges(self) -> None:
+        """
+        Save the profile settings to the config file.
+        """
+        with open(CONFIG_DIRECTORY, 'w') as config_file:
+            self.parser.write(config_file)
+
+    def applyChanges(self) -> None:
+        """
+        Copy the active profile settings to the undervolt file and apply the undervolt to the system.
+        """
         
+        index_map = {
+            '0': 'cpu',
+            '1': 'gpu',
+            '2': 'cpu_cache',
+            '3': 'sys_agent',
+            '4': 'analog_io'
+        }
 
+        profile_settings = self.getProfileSettings()
+
+        # Create the undervolt file in a temporary directory and then move it to the correct location.
+        with tempfile.TemporaryDirectory() as temp_dir:
+
+            # Create a list of each line of the undervolt file. For the undervolt lines, overwrite the present values
+            # with the new profile values.
+            line_list = []
+            with open(self.undervolt_file) as stream:
+                for line in stream:
+                    
+                    if line[0] in ('#', '\n'):
+                        line_list.append(line)
+                    else:
+
+                        arguments = line.split()
+
+                        if arguments[0] == 'undervolt':
+                            index_val = arguments[1]
+                            current_option = index_map[index_val]
+                            setting = profile_settings[current_option]
+                            arguments[-1] = setting
+                        
+                        arguments = ' '.join(arguments)
+                        arguments = f'{arguments}\n'
+
+                        line_list.append(arguments)
+
+            temp_undervolt_file_dir = os.path.join(temp_dir, 'temp-undervolt.conf')
+            
+            # Write the lines to a new temp file
+            with open(temp_undervolt_file_dir, 'w') as tmp_undervolt:
+                total_string = ''.join(line_list)
+                tmp_undervolt.write(total_string)
+
+            undervolt_folder = os.path.split(self.undervolt_file)[0]
+
+            command_1 = f"mv {temp_undervolt_file_dir} {undervolt_folder}"
+            command_2 = "intel-undervolt apply"
+
+            # Move the undervolt file to the correct place and apply the undervolt. Requires root priviliges.
+            final_command = f"pkexec sh -c '{command_1} ; {command_2}'"
+            
+            final_run = subprocess.run(final_command, shell=True, stdout=subprocess.DEVNULL)
+
+        
+        return final_run
+
+
+
+def checkPrerequisites() -> bool:
+    """
+    Checks if the system has the prerequisite software (intel-undervolt) installed.
+    """
+
+    intel_undervolt = subprocess.run("command -v intel-undervolt", shell=True, stdout=subprocess.DEVNULL)
+    check = bool(intel_undervolt)
+
+    return check
