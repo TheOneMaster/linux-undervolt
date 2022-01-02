@@ -4,7 +4,6 @@
 SCRIPT_PATH=$(dirname $(realpath -s $0))
 
 cp "${SCRIPT_PATH}/config.py" "/opt/linux-undervolt/"
-cp "${SCRIPT_PATH}/udev_change.py" "/opt/linux-undervolt/"
 
 # Move temp service to Systemd services
 mv "${1}/temp.service" "/etc/systemd/system/linux-undervolt.powersave.service"
