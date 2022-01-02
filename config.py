@@ -8,7 +8,7 @@ CONFIG_DIRECTORY = os.path.join(HOME, '.config/linux-undervolt.conf')
 
 class Config:
 
-    def __init__(self, created=False, undervolt_file=None):
+    def __init__(self, created=False, options={}):
         """
         docstring
         """
@@ -21,12 +21,11 @@ class Config:
         if created:
             self.parser.read(CONFIG_DIRECTORY)
         else:
-            self.createConfig(general_options={'undervolt_file': undervolt_file})
+            self.createConfig(general_options=options)
             self.saveChanges()
 
         self.undervolt_file = self.parser['SETTINGS']['undervolt_path']
         self.active_profile = self.parser['SETTINGS']['profile']
-
 
     def createConfig(self, exists=False, general_options=None) -> None:
         """
@@ -60,6 +59,13 @@ class Config:
     # Settings and Profiles methods # 
     #################################
 
+    def getSettings(self) -> dict:
+
+        settings = self.parser['SETTINGS']
+        settings = dict(settings)
+
+        return settings
+
     def getProfileSettings(self, profile_number=None) -> dict:
         """
         Return a dictionary of the various profile settings for the selected profile. If no profile is provided,
@@ -74,15 +80,22 @@ class Config:
 
         return settings
 
-    def changeSettings(self, setting: str, new_value: str) -> None:
-
-        self.parser['SETTINGS'][setting] = new_value
-
-    def changeProfile(self, profile_number: str) -> None:
+    def changeSettings(self, setting: str or dict, new_value=None) -> None:
         """
-        Change the active profile of the tool.
+        Change one or more of the general settings of the config file. If changing a single setting,
+        a string is provided along with the new value of the setting. Otherwise a dict for the settings
+        to be changed should be provided.
         """
-        self.parser['SETTINGS']['profile'] = profile_number
+        if isinstance(setting, str):
+            self.parser['SETTINGS'][setting] = new_value
+
+        elif isinstance(setting, dict):
+            for key, value in setting.items():
+                self.parser['SETTINGS'][key] = value
+            
+        else:
+            raise TypeError
+
         self.saveChanges()
 
     def changeProfileSettings(self, settings: dict, profile=None) -> None:
@@ -101,6 +114,10 @@ class Config:
 
         self.saveChanges()
 
+    ########################
+    # Save & Apply changes #
+    ########################
+
     def saveChanges(self) -> None:
         """
         Save the profile settings to the config file.
@@ -108,7 +125,7 @@ class Config:
         with open(CONFIG_DIRECTORY, 'w') as config_file:
             self.parser.write(config_file)
 
-    def applyChanges(self) -> None:
+    def applyChanges(self) -> subprocess.CompletedProcess:
         """
         Copy the active profile settings to the undervolt file and apply the undervolt to the system.
         """
@@ -180,3 +197,24 @@ def checkPrerequisites() -> bool:
     check = bool(intel_undervolt)
 
     return check
+
+def main():
+    """
+    Command line interface to change some settings. Should not be called from GUI.
+    """
+
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-set-profile")
+
+    args = vars(parser.parse_args())
+    new_profile = args['set_profile']
+
+    if new_profile:
+        temp_config = Config(created=True)
+        temp_config.changeSettings('profile', new_profile)
+        temp_config.applyChanges()
+
+if __name__ == "__main__":
+    main()
