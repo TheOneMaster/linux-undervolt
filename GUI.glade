@@ -169,228 +169,6 @@
             <property name="row-spacing">12</property>
             <property name="column-homogeneous">True</property>
             <child>
-              <object class="GtkBox" id="slider-box">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="vexpand">True</property>
-                <property name="orientation">vertical</property>
-                <property name="spacing">3</property>
-                <property name="homogeneous">True</property>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">CPU Voltage</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkScale" id="cpu_scale">
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="adjustment">cpu_v_adj</property>
-                        <property name="show-fill-level">True</property>
-                        <property name="fill-level">0</property>
-                        <property name="round-digits">1</property>
-                        <property name="value-pos">bottom</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">CPU Cache Voltage</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkScale" id="cpuCache_scale">
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="adjustment">cpu_v_adj</property>
-                        <property name="lower-stepper-sensitivity">on</property>
-                        <property name="upper-stepper-sensitivity">on</property>
-                        <property name="show-fill-level">True</property>
-                        <property name="fill-level">0</property>
-                        <property name="round-digits">1</property>
-                        <property name="value-pos">bottom</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">GPU Voltage</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkScale" id="gpu_scale">
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="adjustment">gpu_v_adj</property>
-                        <property name="lower-stepper-sensitivity">on</property>
-                        <property name="upper-stepper-sensitivity">on</property>
-                        <property name="show-fill-level">True</property>
-                        <property name="fill-level">0</property>
-                        <property name="round-digits">1</property>
-                        <property name="value-pos">bottom</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">System Agent Voltage</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkScale" id="sysAgent_scale">
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="adjustment">sysAgent_v_adj</property>
-                        <property name="lower-stepper-sensitivity">on</property>
-                        <property name="upper-stepper-sensitivity">on</property>
-                        <property name="show-fill-level">True</property>
-                        <property name="fill-level">0</property>
-                        <property name="round-digits">1</property>
-                        <property name="value-pos">bottom</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">Analog IO Voltage</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkScale" id="anIO_scale">
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="adjustment">anIO_v_adj</property>
-                        <property name="lower-stepper-sensitivity">on</property>
-                        <property name="upper-stepper-sensitivity">on</property>
-                        <property name="show-fill-level">True</property>
-                        <property name="fill-level">0</property>
-                        <property name="round-digits">1</property>
-                        <property name="value-pos">bottom</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">4</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="left-attach">1</property>
-                <property name="top-attach">1</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
@@ -437,15 +215,19 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="valign">start</property>
+                <property name="margin-top">10</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">8</property>
-                <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="valign">end</property>
                     <property name="label" translatable="yes">Profile</property>
+                    <attributes>
+                      <attribute name="weight" value="semibold"/>
+                    </attributes>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -539,7 +321,6 @@
               <packing>
                 <property name="left-attach">0</property>
                 <property name="top-attach">0</property>
-                <property name="width">2</property>
               </packing>
             </child>
             <child>
@@ -547,16 +328,58 @@
                 <property name="name">power_profile_box</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="valign">start</property>
                 <property name="margin-left">5</property>
                 <property name="margin-right">5</property>
+                <property name="margin-top">5</property>
+                <property name="vexpand">True</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">10</property>
                 <child>
-                  <placeholder/>
-                </child>
-                <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">5</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">Use Profile Switching for Power</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkSwitch" id="power_switch">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="halign">center</property>
+                        <signal name="state-set" handler="powerProfileActivate" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="ac_profile_box">
+                    <property name="visible">True</property>
+                    <property name="sensitive">False</property>
                     <property name="can-focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
@@ -623,8 +446,9 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkBox" id="bat_profile_box">
                     <property name="visible">True</property>
+                    <property name="sensitive">False</property>
                     <property name="can-focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
@@ -691,9 +515,10 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="test-button">
+                  <object class="GtkButton" id="power_profile_button">
                     <property name="label" translatable="yes">Set Power Profile</property>
                     <property name="visible">True</property>
+                    <property name="sensitive">False</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <signal name="clicked" handler="setPowerProfile" swapped="no"/>
@@ -708,6 +533,255 @@
               <packing>
                 <property name="left-attach">0</property>
                 <property name="top-attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">&lt;b&gt;&lt;u&gt;Undervolting Options&lt;/u&gt;&lt;/b&gt;</property>
+                    <property name="use-markup">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="slider-box">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="vexpand">True</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">3</property>
+                    <property name="homogeneous">True</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">CPU Voltage</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkScale" id="cpu_scale">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="adjustment">cpu_v_adj</property>
+                            <property name="show-fill-level">True</property>
+                            <property name="fill-level">0</property>
+                            <property name="round-digits">1</property>
+                            <property name="value-pos">bottom</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">CPU Cache Voltage</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkScale" id="cpuCache_scale">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="adjustment">cpu_v_adj</property>
+                            <property name="lower-stepper-sensitivity">on</property>
+                            <property name="upper-stepper-sensitivity">on</property>
+                            <property name="show-fill-level">True</property>
+                            <property name="fill-level">0</property>
+                            <property name="round-digits">1</property>
+                            <property name="value-pos">bottom</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">GPU Voltage</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkScale" id="gpu_scale">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="adjustment">gpu_v_adj</property>
+                            <property name="lower-stepper-sensitivity">on</property>
+                            <property name="upper-stepper-sensitivity">on</property>
+                            <property name="show-fill-level">True</property>
+                            <property name="fill-level">0</property>
+                            <property name="round-digits">1</property>
+                            <property name="value-pos">bottom</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">System Agent Voltage</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkScale" id="sysAgent_scale">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="adjustment">sysAgent_v_adj</property>
+                            <property name="lower-stepper-sensitivity">on</property>
+                            <property name="upper-stepper-sensitivity">on</property>
+                            <property name="show-fill-level">True</property>
+                            <property name="fill-level">0</property>
+                            <property name="round-digits">1</property>
+                            <property name="value-pos">bottom</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Analog IO Voltage</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkScale" id="anIO_scale">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="adjustment">anIO_v_adj</property>
+                            <property name="lower-stepper-sensitivity">on</property>
+                            <property name="upper-stepper-sensitivity">on</property>
+                            <property name="show-fill-level">True</property>
+                            <property name="fill-level">0</property>
+                            <property name="round-digits">1</property>
+                            <property name="value-pos">bottom</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">4</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">0</property>
+                <property name="height">2</property>
               </packing>
             </child>
           </object>
