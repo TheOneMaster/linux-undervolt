@@ -274,9 +274,23 @@ class MainWindow:
             backend_dict['bat'] = str(bat_profile)
 
         self.config.changeSettings(options)
-        backend.createUdevRule(backend_dict)
+        code = backend.createUdevRule(backend_dict).returncode
         
-        
+        if not code:
+            dialog = gtk.MessageDialog(
+                message_type=gtk.MessageType.INFO,
+                buttons=gtk.ButtonsType.OK,
+                text="Profile switching active!"
+            )
+        else:
+            dialog = gtk.MessageDialog(
+                message_type=gtk.MessageType.ERROR,
+                buttons=gtk.ButtonsType.OK,
+                text="An error occurred."
+            )
+
+        dialog.run()
+        dialog.destroy()
 
 
 
