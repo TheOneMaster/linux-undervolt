@@ -2,3 +2,5 @@
 /.vscode
 scratch.py
 /linux_undervolt/__pycache__
+GUI.glade~
+\#GUI.glade\#
