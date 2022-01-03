@@ -6,6 +6,7 @@ import tempfile
 HOME = os.environ['HOME']
 CONFIG_DIRECTORY = os.path.join(HOME, '.config/linux-undervolt.conf')
 
+
 class Config:
 
     def __init__(self, created=False, options={}):
@@ -34,9 +35,9 @@ class Config:
         """
 
         if not exists:
-            
+
             undervolt_path = general_options.get("undervolt_path", "/etc/intel-undervolt.conf")
-            battery_switch = general_options.get("bat_switch", False)
+            battery_switch = general_options.get("bat_switch", 'false')
             battery_profile = general_options.get("bat_profile", "")
             ac_profile = general_options.get("ac_profile", "")
 
@@ -50,19 +51,22 @@ class Config:
 
         profile_options = ['cpu', 'gpu', 'cpu_cache', 'sys_agent', 'analog_io']
 
-        profiles = [{i:0 for i in profile_options} for j in range(4)]
+        profiles = [{i: 0 for i in profile_options} for j in range(4)]
 
         for index, profile in enumerate(profiles):
             self.parser[str(index)] = profile
 
-    ################################# 
-    # Settings and Profiles methods # 
+    #################################
+    # Settings and Profiles methods #
     #################################
 
-    def getSettings(self) -> dict:
+    def getSettings(self, setting=None) -> dict:
 
         settings = self.parser['SETTINGS']
         settings = dict(settings)
+
+        if setting:
+            settings = settings[setting]
 
         return settings
 
@@ -82,9 +86,12 @@ class Config:
 
     def changeSettings(self, setting: str or dict, new_value=None) -> None:
         """
-        Change one or more of the general settings of the config file. If changing a single setting,
-        a string is provided along with the new value of the setting. Otherwise a dict for the settings
-        to be changed should be provided.
+        Change one or more of the general settings of the config file.
+
+        Arguments:
+        setting (either str or dict) - Either a dictionary of key:value pairs for settings to be changed
+                                       or a string denoting a single setting
+        new_value (str) - When a single setting is to be changed, provide the new value into this argument
         """
         if isinstance(setting, str):
             self.parser['SETTINGS'][setting] = new_value
@@ -92,7 +99,7 @@ class Config:
         elif isinstance(setting, dict):
             for key, value in setting.items():
                 self.parser['SETTINGS'][key] = value
-            
+
         else:
             raise TypeError
 
@@ -129,7 +136,7 @@ class Config:
         """
         Copy the active profile settings to the undervolt file and apply the undervolt to the system.
         """
-        
+
         index_map = {
             '0': 'cpu',
             '1': 'gpu',
@@ -148,7 +155,7 @@ class Config:
             line_list = []
             with open(self.undervolt_file) as stream:
                 for line in stream:
-                    
+
                     if line[0] in ('#', '\n'):
                         line_list.append(line)
                     else:
@@ -160,14 +167,14 @@ class Config:
                             current_option = index_map[index_val]
                             setting = profile_settings[current_option]
                             arguments[-1] = setting
-                        
+
                         arguments = ' '.join(arguments)
                         arguments = f'{arguments}\n'
 
                         line_list.append(arguments)
 
             temp_undervolt_file_dir = os.path.join(temp_dir, 'temp-undervolt.conf')
-            
+
             # Write the lines to a new temp file
             with open(temp_undervolt_file_dir, 'w') as tmp_undervolt:
                 total_string = ''.join(line_list)
@@ -180,12 +187,10 @@ class Config:
 
             # Move the undervolt file to the correct place and apply the undervolt. Requires root priviliges.
             final_command = f"pkexec sh -c '{command_1} ; {command_2}'"
-            
+
             final_run = subprocess.run(final_command, shell=True, stdout=subprocess.DEVNULL)
 
-        
         return final_run
-
 
 
 def checkPrerequisites() -> bool:
@@ -197,6 +202,7 @@ def checkPrerequisites() -> bool:
     check = bool(intel_undervolt)
 
     return check
+
 
 def main():
     """
@@ -215,6 +221,7 @@ def main():
         temp_config = Config(created=True)
         temp_config.changeSettings('profile', new_profile)
         temp_config.applyChanges()
+
 
 if __name__ == "__main__":
     main()
