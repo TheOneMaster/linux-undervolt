@@ -125,6 +125,9 @@ class MainWindow:
             value = int(value)
             scale.set_value(value)
 
+        save_button = self.builder.get_object("save_button")
+        save_button.set_label("Save")
+
     def getPowerProfiles(self):
         """
         Change power profile dropdowns to settings value.
@@ -157,17 +160,21 @@ class MainWindow:
         """
 
         active = self.config.parser.getboolean('SETTINGS', 'battery_switch')
+        
+        switch = self.builder.get_object('power_switch')
+        switch.set_active(active)
 
+        objects = ['ac_profile_box', 'bat_profile_box', 'power_profile_button']
+        for object in objects:
+            cur_obj = self.builder.get_object(object)
+            cur_obj.set_sensitive(active)
 
-        if active:
-            
-            switch = self.builder.get_object('power_switch')
-            switch.set_active(True)
-
-            objects = ['ac_profile_box', 'bat_profile_box', 'power_profile_button']
-            for object in objects:
-                cur_obj = self.builder.get_object(object)
-                cur_obj.set_sensitive(True)
+    def onSliderChange(self, widget):
+        """
+        Changes the save button to be italicised when changes are made to the undervolt values.
+        """
+        label = widget.get_child()
+        label.set_markup("<i>Save*</i>")
 
     ####################
     # Config Functions #
@@ -196,45 +203,6 @@ class MainWindow:
                 break
 
         self.scaleChange()
-
-    def saveProfile(self, _):
-
-        # Get the values from the scales
-        current_settings = self.config.getProfileSettings()
-
-        new_settings = {}
-        for key in current_settings:
-
-            object_id = MainWindow.SCALE_MAP[key]
-            scale = self.builder.get_object(object_id)
-
-            new_value = scale.get_value()
-            new_value = int(new_value)
-
-            new_settings[key] =  new_value
-        
-        self.config.changeProfileSettings(new_settings)
-
-    def applyProfile(self, _):
-        
-        code = self.config.applyChanges().returncode
-        sleep(0.3)
-
-        if not code:
-            dialog = gtk.MessageDialog(
-                message_type=gtk.MessageType.INFO,
-                buttons=gtk.ButtonsType.OK,
-                text='Undervolt applied'
-            )
-        else:
-            dialog = gtk.MessageDialog(
-                message_type=gtk.MessageType.ERROR,
-                buttons=gtk.ButtonsType.OK,
-                text='Something Failed. Undervolt not applied.'
-            )
-
-        dialog.run()
-        dialog.destroy() 
 
     def setPowerProfile(self, _):
         """
@@ -292,6 +260,51 @@ class MainWindow:
         dialog.run()
         dialog.destroy()
 
+    def saveProfile(self, _):
+        """
+        Save scale values to the profile in the config
+        """
+        # Get the values from the scales
+        current_settings = self.config.getProfileSettings()
+
+        new_settings = {}
+        for key in current_settings:
+
+            object_id = MainWindow.SCALE_MAP[key]
+            scale = self.builder.get_object(object_id)
+
+            new_value = scale.get_value()
+            new_value = int(new_value)
+
+            new_settings[key] =  new_value
+        
+        self.config.changeProfileSettings(new_settings)
+
+        save_button = self.builder.get_object("save_button")
+        save_button.set_text("Save")
+
+    def applyProfile(self, _):
+        """
+        Apply the undervolt from the current profile values.
+        """
+        code = self.config.applyChanges().returncode
+        sleep(0.3)
+
+        if not code:
+            dialog = gtk.MessageDialog(
+                message_type=gtk.MessageType.INFO,
+                buttons=gtk.ButtonsType.OK,
+                text='Undervolt applied'
+            )
+        else:
+            dialog = gtk.MessageDialog(
+                message_type=gtk.MessageType.ERROR,
+                buttons=gtk.ButtonsType.OK,
+                text='Something Failed. Undervolt not applied.'
+            )
+
+        dialog.run()
+        dialog.destroy() 
 
 
 if __name__ == "__main__":

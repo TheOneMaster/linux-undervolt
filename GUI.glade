@@ -588,6 +588,7 @@
                             <property name="fill-level">0</property>
                             <property name="round-digits">1</property>
                             <property name="value-pos">bottom</property>
+                            <signal name="value-changed" handler="onSliderChange" object="save_button" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -630,6 +631,7 @@
                             <property name="fill-level">0</property>
                             <property name="round-digits">1</property>
                             <property name="value-pos">bottom</property>
+                            <signal name="value-changed" handler="onSliderChange" object="save_button" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -672,6 +674,7 @@
                             <property name="fill-level">0</property>
                             <property name="round-digits">1</property>
                             <property name="value-pos">bottom</property>
+                            <signal name="value-changed" handler="onSliderChange" object="save_button" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -714,6 +717,7 @@
                             <property name="fill-level">0</property>
                             <property name="round-digits">1</property>
                             <property name="value-pos">bottom</property>
+                            <signal name="value-changed" handler="onSliderChange" object="save_button" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -756,6 +760,7 @@
                             <property name="fill-level">0</property>
                             <property name="round-digits">1</property>
                             <property name="value-pos">bottom</property>
+                            <signal name="value-changed" handler="onSliderChange" object="save_button" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
