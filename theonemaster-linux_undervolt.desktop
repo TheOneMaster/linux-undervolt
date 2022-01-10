@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Linux Undervolt Tool
+Version=0.2-2
+Type=Application
+Comment=GUI Interface for intel-undervolt
+
+Exec=linux_undervolt
+Icon=/usr/share/icons/gnome/48x48/apps/file-manager.png
+Categories=Utility;
+
+Terminal=False
+StartupNotify=True
+StartupWMClass=linux_undervolt

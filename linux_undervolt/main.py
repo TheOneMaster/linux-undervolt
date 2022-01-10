@@ -6,8 +6,8 @@ from gi.repository import Gtk as gtk
 from time import sleep
 import os
 
-import config
-import backend
+from . import config
+from . import backend
 
 
 class MainWindow:
@@ -314,8 +314,11 @@ class MainWindow:
         dialog.run()
         dialog.destroy() 
 
+def main():
+    main = MainWindow()
+    gtk.main()
+
 
 if __name__ == "__main__":
     
-    main = MainWindow()
-    gtk.main()
+    main()
