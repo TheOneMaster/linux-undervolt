@@ -116,6 +116,7 @@
                       <object class="GtkCheckMenuItem">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="tooltip-text" translatable="yes">Currently WIP</property>
                         <property name="label" translatable="yes">Advanced Options</property>
                         <property name="use-underline">True</property>
                       </object>

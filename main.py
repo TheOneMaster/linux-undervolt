@@ -114,6 +114,7 @@ class MainWindow:
         """
         Changes the scale values to the current profile values.
         """
+
         current_settings = self.config.getProfileSettings()
 
         for key, value in current_settings.items():
@@ -173,6 +174,7 @@ class MainWindow:
         """
         Changes the save button to be italicised when changes are made to the undervolt values.
         """
+
         label = widget.get_child()
         label.set_markup("<i>Save*</i>")
 
@@ -184,9 +186,13 @@ class MainWindow:
         """
         docstring
         """
-        state = str(state).lower()
-        self.config.changeSettings('battery_switch', state)
+
+        state_str = str(state).lower()
+        self.config.changeSettings('battery_switch', state_str)
         self.powerSwitch()
+
+        if not state:
+            backend.removeUdevRule()
 
     def changeProfile(self, widget):
         """
@@ -214,8 +220,8 @@ class MainWindow:
             "battery_profile": ""
         }
 
-        ac_power_bool: bool = self.builder.get_object("ac_profile_bool").get_active()
-        bat_power_bool: bool = self.builder.get_object("bat_profile_bool").get_active()
+        ac_power_bool = self.builder.get_object("ac_profile_bool").get_active()
+        bat_power_bool = self.builder.get_object("bat_profile_bool").get_active()
 
         backend_dict = {}
 
@@ -264,6 +270,7 @@ class MainWindow:
         """
         Save scale values to the profile in the config
         """
+
         # Get the values from the scales
         current_settings = self.config.getProfileSettings()
 
@@ -287,6 +294,7 @@ class MainWindow:
         """
         Apply the undervolt from the current profile values.
         """
+        
         code = self.config.applyChanges().returncode
         sleep(0.3)
 

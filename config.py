@@ -28,26 +28,24 @@ class Config:
         self.undervolt_file = self.parser['SETTINGS']['undervolt_path']
         self.active_profile = self.parser['SETTINGS']['profile']
 
-    def createConfig(self, exists=False, general_options=None) -> None:
+    def createConfig(self, general_options=None) -> None:
         """
         Creates the configuration file for the application. Stores the general settings as well as profile-specific
         information.
         """
 
-        if not exists:
+        undervolt_path = general_options.get("undervolt_path", "/etc/intel-undervolt.conf")
+        battery_switch = general_options.get("bat_switch", 'false')
+        battery_profile = general_options.get("bat_profile", "")
+        ac_profile = general_options.get("ac_profile", "")
 
-            undervolt_path = general_options.get("undervolt_path", "/etc/intel-undervolt.conf")
-            battery_switch = general_options.get("bat_switch", 'false')
-            battery_profile = general_options.get("bat_profile", "")
-            ac_profile = general_options.get("ac_profile", "")
-
-            self.parser['SETTINGS'] = {
-                'profile': 0,
-                'undervolt_path': undervolt_path,
-                'battery_switch': battery_switch,
-                'battery_profile': battery_profile,
-                'ac_profile': ac_profile
-            }
+        self.parser['SETTINGS'] = {
+            'profile': 0,
+            'undervolt_path': undervolt_path,
+            'battery_switch': battery_switch,
+            'battery_profile': battery_profile,
+            'ac_profile': ac_profile
+        }
 
         profile_options = ['cpu', 'gpu', 'cpu_cache', 'sys_agent', 'analog_io']
 

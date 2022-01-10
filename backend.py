@@ -75,3 +75,19 @@ def createUdevRule(options: dict) -> None:
         command_run = subprocess.run(f"pkexec sh -c '{command_1}; {command_2}; {command_3}; {command_4}'", shell=True)
     
     return command_run
+
+def removeUdevRule() -> int:
+
+    udev_rule = "/etc/udev/rules.d/100.linux-undervolt.rules"
+    systemd_service_dir = "/etc/systemd/system/"
+
+    if os.path.isfile(udev_rule):
+        systemd_service = os.path.join(systemd_service_dir, 'linux-undervolt.powersave.service')
+        systemd_env = os.path.join(systemd_service_dir, 'linux-undervolt.powersave.env')
+
+        command = f"pkexec rm -f {udev_rule} {systemd_service} {systemd_env}"
+        run = subprocess.run(command, shell=True, stdout=subprocess.DEVNULL)
+        return run.returncode
+
+    else:
+        return 0
