@@ -4,6 +4,7 @@ from configparser import ConfigParser
 import tempfile
 
 HOME = os.environ['HOME']
+FILE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def createUdevRule(options: dict) -> None:
     """
@@ -65,14 +66,12 @@ def createUdevRule(options: dict) -> None:
                 udev_rule.write(ac)
 
         # Run the shell script to move and copy the files to their appropriate places
-        script_file = os.path.join(os.getcwd(), 'powersave.sh')
+        script_file = os.path.join(FILE_DIR, 'powersave.sh')
 
         command_1 = f'chmod +x {script_file}'   # Make the shell script executable
         command_2 = f'{script_file} {tmp_dir}'  # Execute shell script
-        command_3 = 'systemctl daemon-reload'   # Reload systemd daemon (for service to be recognised)
-        command_4 = 'udevadm control --reload'  # Reload udev rules
 
-        command_run = subprocess.run(f"pkexec sh -c '{command_1}; {command_2}; {command_3}; {command_4}'", shell=True)
+        command_run = subprocess.run(f"pkexec sh -c '{command_1}; {command_2}'", shell=True)
     
     return command_run
 

@@ -188,11 +188,16 @@ class MainWindow:
         """
 
         state_str = str(state).lower()
+        
+        if not state:
+            run = backend.removeUdevRule()
+
+            # If the run fails, do not change the UI. TODO: Add error message stating that the run failed.
+            if run:
+                return        
+        
         self.config.changeSettings('battery_switch', state_str)
         self.powerSwitch()
-
-        if not state:
-            backend.removeUdevRule()
 
     def changeProfile(self, widget):
         """
@@ -288,7 +293,7 @@ class MainWindow:
         self.config.changeProfileSettings(new_settings)
 
         save_button = self.builder.get_object("save_button")
-        save_button.set_text("Save")
+        save_button.set_label("Save")
 
     def applyProfile(self, _):
         """

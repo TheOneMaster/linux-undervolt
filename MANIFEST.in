@@ -1,1 +1,2 @@
 include linux_undervolt/GUI.glade
+include linux_undervolt/powersave.sh

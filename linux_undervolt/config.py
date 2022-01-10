@@ -179,14 +179,15 @@ class Config:
                 tmp_undervolt.write(total_string)
 
             undervolt_folder = os.path.split(self.undervolt_file)[0]
+            undervolt_file = os.path.join(undervolt_folder, 'intel-undervolt.conf')
 
-            command_1 = f"mv {temp_undervolt_file_dir} {undervolt_folder}"
+            command_1 = f"mv {temp_undervolt_file_dir} {undervolt_file}"
             command_2 = "intel-undervolt apply"
 
             # Move the undervolt file to the correct place and apply the undervolt. Requires root priviliges.
             final_command = f"pkexec sh -c '{command_1} ; {command_2}'"
 
-            final_run = subprocess.run(final_command, shell=True, stdout=subprocess.DEVNULL)
+            final_run = subprocess.run(final_command, shell=True)
 
         return final_run
 
