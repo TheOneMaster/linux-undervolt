@@ -4,7 +4,7 @@ A fairly simple tool built to mimic the basic functionality of ThrottleStop on W
 
 Uses <a href="https://github.com/kitsunyan/intel-undervolt">intel-undervolt</a> to perform the undervolting, therefore it must be installed on the user's system. <a href="https://github.com/kitsunyan/intel-undervolt/blob/master/README.md">The guide to installing it can be found here</a>
 
-To run this program, download the deb file from the latest <a href="https://github.com/TheOneMaster/linux-undervolt/releases/tag/v0.2-3">release</a> and install it to the user's system. Once installed, it can be run either using the command line call `linux_undervolt` or finding the application in the application launcher (Currently it uses a placeholder icon from gnome).
+To run this program, download the deb file from the latest <a href="https://github.com/TheOneMaster/linux-undervolt/releases/latest">release</a> and install it to the user's system. Once installed, it can be run either using the command line call `linux_undervolt` or finding the application in the application launcher (Currently it uses a placeholder icon from gnome).
 
 ## GUI Instructions
 
