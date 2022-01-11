@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import gi
 gi.require_version('Gtk', '3.0')
+gi.require_version('Notify', '0.7')
 from gi.repository import Gtk as gtk
+from gi.repository import Notify
 
 from time import sleep
 import os
@@ -46,6 +48,8 @@ class MainWindow:
         self.scaleChange()
         self.powerSwitch()
         self.getPowerProfiles()
+
+        Notify.init("Linux Undervolt Tool")
         
         # Set correct profile button active
         button_id = f"profile_{self.config.active_profile}_button"
@@ -178,6 +182,7 @@ class MainWindow:
         label = widget.get_child()
         label.set_markup("<i>Save*</i>")
 
+
     ####################
     # Config Functions #
     ####################
@@ -256,11 +261,10 @@ class MainWindow:
         code = backend.createUdevRule(backend_dict).returncode
         
         if not code:
-            dialog = gtk.MessageDialog(
-                message_type=gtk.MessageType.INFO,
-                buttons=gtk.ButtonsType.OK,
-                text="Profile switching active!"
-            )
+            Notify.Notification.new(
+                summary="Profile switching active",
+                body="Switching profiles on the power supply change is now active."
+            ).show()
         else:
             dialog = gtk.MessageDialog(
                 message_type=gtk.MessageType.ERROR,
@@ -304,11 +308,10 @@ class MainWindow:
         sleep(0.3)
 
         if not code:
-            dialog = gtk.MessageDialog(
-                message_type=gtk.MessageType.INFO,
-                buttons=gtk.ButtonsType.OK,
-                text='Undervolt applied'
-            )
+            Notify.Notification.new(
+                summary="Profile Applied",
+                body=f"Profile {self.config.getSettings('profile')}'s settings were applied."
+            ).show()
         else:
             dialog = gtk.MessageDialog(
                 message_type=gtk.MessageType.ERROR,
@@ -316,8 +319,8 @@ class MainWindow:
                 text='Something Failed. Undervolt not applied.'
             )
 
-        dialog.run()
-        dialog.destroy() 
+            dialog.run()
+            dialog.destroy() 
 
 def main():
     main = MainWindow()

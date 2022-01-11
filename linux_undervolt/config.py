@@ -209,7 +209,11 @@ def main():
     """
 
     import argparse
+    import gi
+    gi.require_version('Notify', '0.7')
+    from gi.repository import Notify
 
+    Notify.init('Linux Undervolt Tool')
     parser = argparse.ArgumentParser()
     parser.add_argument("-set-profile")
 
@@ -220,6 +224,12 @@ def main():
         temp_config = Config(created=True)
         temp_config.changeSettings('profile', new_profile)
         temp_config.applyChanges()
+
+        Notify.Notification.new(
+            summary='Profile Changed',
+            body=f'Profile {new_profile} active'
+        ).show()
+        
 
 
 if __name__ == "__main__":
