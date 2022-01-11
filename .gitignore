@@ -1,6 +1,11 @@
+# Directories
 /__pycache__
 /.vscode
-scratch.py
+/builds
 /linux_undervolt/__pycache__
+
+# Files
+scratch.py
 GUI.glade~
 \#GUI.glade\#
+
