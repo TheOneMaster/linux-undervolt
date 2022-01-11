@@ -8,7 +8,7 @@ setup(
     author_email = "tmp@gmail.com",
     description = "GUI Frontend for intel-undervolt",
     license="GPLv2",
-    url="https://github.com/TheOneMaster/linux_undervolt",
+    url="https://github.com/TheOneMaster/linux-undervolt",
     packages=['linux_undervolt'],
     include_package_data=True,
     entry_points={
