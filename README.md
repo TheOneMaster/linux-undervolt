@@ -4,7 +4,7 @@ A fairly simple tool built to mimic the basic functionality of ThrottleStop on W
 
 Uses <a href="https://github.com/kitsunyan/intel-undervolt">intel-undervolt</a> to perform the undervolting, therefore it must be installed on the user's system. <a href="https://github.com/kitsunyan/intel-undervolt/blob/master/README.md">The guide to installing it can be found here</a>
 
-To run this program, clone the repository or download it as a zip. Once extracted, run the main python file. This can be accomplished by opening a terminal in the folder and runnning the command `python3 main.py`. If the above command doesn't it work, either use `python main.py` or Python 3 needs to be installed on the machine. 
+To run this program, download the deb file from the latest <a href="https://github.com/TheOneMaster/linux-undervolt/releases/tag/v0.2-3">release</a> and install it to the user's system. Once installed, it can be run either using the command line call `linux_undervolt` or finding the application in the application launcher (Currently it uses a placeholder icon from gnome).
 
 ## GUI Instructions
 
@@ -17,6 +17,9 @@ What the GUI currently looks like:
 
 ### TODO:
 
+* Add CPU info tab
+* Add import/export functionality for config file
 * Add buttons for toggles in intel-undervolt (daemon mode, enable)
 * Create Backup of original intel-undervolt config file for easy reset to default
 * Create power user settings toggle that enables more advanced features
+* Add tab for live cpu W/h readings
