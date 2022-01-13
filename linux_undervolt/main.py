@@ -6,6 +6,8 @@ from gi.repository import Gtk as gtk
 from gi.repository import Notify
 
 from time import sleep
+from datetime import date
+
 import os
 
 from . import config
@@ -35,7 +37,7 @@ class MainWindow:
             if return_code != gtk.ResponseType.OK:
                 return
         else:
-            self.config = config.Config(created=True)
+            self.config = config.Config()
 
         # Create template and add general signals 
         current_directory = os.path.dirname(os.path.abspath(__file__))
@@ -61,7 +63,7 @@ class MainWindow:
         window.connect("delete-event", gtk.main_quit)
         window.show()
 
-    def firstTimeSetup(self):
+    def firstTimeSetup(self) -> gtk.ResponseType:
         """
         Creates the initial files required for the application to run. This is only called the first time
         the application is run. 
@@ -70,33 +72,11 @@ class MainWindow:
         # Check whether intel-undervolt has been installed.
 
         prereqs = config.checkPrerequisites()
+
         if prereqs:
-            default_undervolt_path = '/etc/intel-undervolt.conf'
-            
-            if os.path.isfile(default_undervolt_path):
-                self.config = config.Config()
-                return gtk.ResponseType.OK
+            self.config = config.Config(configFile=None)
+            response =  gtk.ResponseType.OK
 
-            else:
-                folder_dialog = gtk.FileChooserDialog("Select intel-undervolt Config File", None, gtk.FileChooserAction.OPEN,
-                (gtk.STOCK_CLOSE, gtk.ResponseType.CLOSE, gtk.STOCK_OPEN, gtk.ResponseType.OK))
-        
-                filter_conf = gtk.FileFilter()
-                filter_conf.set_name("Configuration files")
-                filter_conf.add_pattern("*.conf")
-                folder_dialog.add_filter(filter_conf)
-
-                response = folder_dialog.run()
-
-                if response == gtk.ResponseType.OK:
-                    response = folder_dialog.get_filename()
-                    options = {'undervolt_path': response}
-                    self.config = config.Config(options=options)
-                else:
-                    folder_dialog.destroy()
-
-                return response
-        
         else:
             dialog = gtk.MessageDialog(
                 message_type=gtk.MessageType.ERROR,
@@ -105,10 +85,10 @@ class MainWindow:
                 required programs (intel-undervolt) properly installed."""
             )
 
-            dialog.run()
+            response = dialog.run()
             dialog.destroy()
 
-            return dialog
+        return response
 
     ##############
     # UI Changes #
@@ -272,8 +252,60 @@ class MainWindow:
                 text="An error occurred."
             )
 
-        dialog.run()
+            dialog.run()
+            dialog.destroy()
+
+    def importConfig(self, _):
+
+        dialog = gtk.FileChooserDialog(
+            title="Choose import file",
+            action=gtk.FileChooserAction.OPEN
+        )
+
+        dialog.add_buttons(
+            gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
+            gtk.STOCK_OPEN, gtk.ResponseType.OK
+        )
+
+        file_filter = gtk.FileFilter()
+        file_filter.set_name("Config File")
+        file_filter.add_pattern("*.conf")
+
+        dialog.add_filter(file_filter)
+
+        response = dialog.run()
+
+        if response == gtk.ResponseType.OK:
+            filename = dialog.get_filename()
+            self.config = config.Config(filename)
+            self.config.saveChanges()
+        
         dialog.destroy()
+
+    def exportConfig(self, _):
+        
+        dialog = gtk.FileChooserDialog(
+            title="Select export file",
+            action=gtk.FileChooserAction.SAVE
+        )
+
+        # Set default export file name
+        file_name = date.today().isoformat()
+        file_name = f"{file_name}_linux-undervolt.conf"
+        dialog.set_current_name(file_name)
+
+        dialog.add_buttons(
+            gtk.STOCK_SAVE, gtk.ResponseType.OK,
+            gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL
+        )
+
+        response = dialog.run()
+
+        if response == gtk.ResponseType.OK:
+            self.config.exportConfig(dialog.get_filename())
+        
+        dialog.destroy()
+
 
     def saveProfile(self, _):
         """
