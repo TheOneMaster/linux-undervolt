@@ -18,7 +18,6 @@ What the GUI currently looks like:
 ### TODO:
 
 * Add CPU info tab
-* Add import/export functionality for config file
 * Add buttons for toggles in intel-undervolt (daemon mode, enable)
 * Create Backup of original intel-undervolt config file for easy reset to default
 * Create power user settings toggle that enables more advanced features
