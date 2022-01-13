@@ -218,7 +218,7 @@ def main():
     new_profile = args['set_profile']
 
     if new_profile:
-        temp_config = Config(created=True)
+        temp_config = Config()
         temp_config.changeSettings('profile', new_profile)
         temp_config.applyChanges()
         
