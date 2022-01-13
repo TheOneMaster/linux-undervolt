@@ -49,6 +49,7 @@ def createUdevRule(options: dict) -> None:
 
         # Add environment variables since the service will be run as root
         env_dir = os.path.join(tmp_dir, "temp.env")
+
         with open(env_dir, 'w') as env_file:
             env_file.write(f'HOME={HOME}\n')
 
