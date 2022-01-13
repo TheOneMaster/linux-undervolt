@@ -1,12 +1,18 @@
 from setuptools import setup
 import linux_undervolt
 
+with open("README.md", 'r') as fh:
+    long_description = fh.read()
+
+
 setup(
     name = "linux_undervolt-tool",
     version = linux_undervolt.__version__,
     author = "TheOneMaster",
     author_email = "tmp@gmail.com",
     description = "GUI Frontend for intel-undervolt",
+    long_description=long_description,
+    long_description_content_type="text/markdown"
     license="GPLv2",
     url="https://github.com/TheOneMaster/linux-undervolt",
     packages=['linux_undervolt'],
