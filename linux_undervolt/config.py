@@ -188,7 +188,7 @@ class Config:
             # Move the undervolt file to the correct place and apply the undervolt. Requires root priviliges.
             final_command = f"pkexec sh -c '{command_1} ; {command_2}'"
 
-            final_run = subprocess.run(final_command, shell=True)
+            final_run = subprocess.run(final_command, shell=True, stdout=subprocess.DEVNULL)
 
         return final_run
 

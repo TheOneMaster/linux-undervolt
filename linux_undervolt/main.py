@@ -158,10 +158,10 @@ class MainWindow:
         """
         Changes the save button to be italicised when changes are made to the undervolt values.
         """
-
-        label = widget.get_child()
-        label.set_markup("<i>Save*</i>")
-
+        
+        if widget.get_label() == 'Save': 
+            label = widget.get_child()
+            label.set_markup("<i>Save*</i>")
 
     ####################
     # Config Functions #
@@ -279,6 +279,10 @@ class MainWindow:
             filename = dialog.get_filename()
             self.config = config.Config(filename)
             self.config.saveChanges()
+
+            Notify.Notification.new(
+                "Config import succeeded."
+            ).show()
         
         dialog.destroy()
 

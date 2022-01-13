@@ -72,7 +72,7 @@ def createUdevRule(options: dict) -> None:
         command_1 = f'chmod +x {script_file}'   # Make the shell script executable
         command_2 = f'{script_file} {tmp_dir}'  # Execute shell script
 
-        command_run = subprocess.run(f"pkexec sh -c '{command_1}; {command_2}'", shell=True)
+        command_run = subprocess.run(f"pkexec sh -c '{command_1}; {command_2}'", shell=True, stdout=subprocess.DEVNULL)
     
     return command_run
 
