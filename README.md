@@ -1,6 +1,6 @@
 # Linux Undervolt Tool
 
-A fairly simple tool built to mimic the basic functionality of ThrottleStop on Windows. Acts as a GUI so users are able to tell what they are doing without fiddling with the terminal.
+A fairly simple GTK tool built to mimic the basic functionality of ThrottleStop on Windows. Acts as a GUI so users are able to tell what they are doing without fiddling with the terminal.
 
 Uses <a href="https://github.com/kitsunyan/intel-undervolt">intel-undervolt</a> to perform the undervolting, therefore it must be installed on the user's system. <a href="https://github.com/kitsunyan/intel-undervolt/blob/master/README.md">The guide to installing it can be found here</a>
 

@@ -9,7 +9,7 @@ CONFIG_DIRECTORY = os.path.join(HOME, '.config/linux-undervolt.conf')
 
 class Config:
 
-    def __init__(self, created=False, options={}):
+    def __init__(self, configFile=CONFIG_DIRECTORY):
         """
         docstring
         """
@@ -19,38 +19,34 @@ class Config:
         self.undervolt_file = None
         self.active_profile = None
 
-        if created:
-            self.parser.read(CONFIG_DIRECTORY)
+        if os.path.isfile(configFile):
+            self.parser.read(configFile)
         else:
-            self.createConfig(general_options=options)
+            self.createConfig()
             self.saveChanges()
 
         self.undervolt_file = self.parser['SETTINGS']['undervolt_path']
         self.active_profile = self.parser['SETTINGS']['profile']
 
-    def createConfig(self, general_options=None) -> None:
+    def createConfig(self) -> None:
         """
         Creates the configuration file for the application. Stores the general settings as well as profile-specific
         information.
         """
 
-        undervolt_path = general_options.get("undervolt_path", "/etc/intel-undervolt.conf")
-        battery_switch = general_options.get("bat_switch", 'false')
-        battery_profile = general_options.get("bat_profile", "")
-        ac_profile = general_options.get("ac_profile", "")
-
         self.parser['SETTINGS'] = {
             'profile': 0,
-            'undervolt_path': undervolt_path,
-            'battery_switch': battery_switch,
-            'battery_profile': battery_profile,
-            'ac_profile': ac_profile
+            'undervolt_path': "/etc/intel-undervolt.conf",
+            'battery_switch': 'false',
+            'battery_profile': "",
+            'ac_profile': ""
         }
 
         profile_options = ['cpu', 'gpu', 'cpu_cache', 'sys_agent', 'analog_io']
 
         profiles = [{i: 0 for i in profile_options} for j in range(4)]
 
+        # Create default undervolt values for each profile in config file
         for index, profile in enumerate(profiles):
             self.parser[str(index)] = profile
 
@@ -122,6 +118,11 @@ class Config:
     ########################
     # Save & Apply changes #
     ########################
+
+    def exportConfig(self, output):
+
+        with open(output, 'w') as export_file:
+            self.parser.write(export_file)
 
     def saveChanges(self) -> None:
         """
@@ -209,11 +210,7 @@ def main():
     """
 
     import argparse
-    import gi
-    gi.require_version('Notify', '0.7')
-    from gi.repository import Notify
 
-    Notify.init('Linux Undervolt Tool')
     parser = argparse.ArgumentParser()
     parser.add_argument("-set-profile")
 
@@ -224,11 +221,6 @@ def main():
         temp_config = Config(created=True)
         temp_config.changeSettings('profile', new_profile)
         temp_config.applyChanges()
-
-        Notify.Notification.new(
-            summary='Profile Changed',
-            body=f'Profile {new_profile} active'
-        ).show()
         
 
 
