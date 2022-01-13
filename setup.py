@@ -12,7 +12,7 @@ setup(
     author_email = "tmp@gmail.com",
     description = "GUI Frontend for intel-undervolt",
     long_description=long_description,
-    long_description_content_type="text/markdown"
+    long_description_content_type="text/markdown",
     license="GPLv2",
     url="https://github.com/TheOneMaster/linux-undervolt",
     packages=['linux_undervolt'],
