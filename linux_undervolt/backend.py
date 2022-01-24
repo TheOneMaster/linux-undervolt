@@ -1,7 +1,12 @@
 import os
 import subprocess
-from configparser import ConfigParser
 import tempfile
+import zipfile
+
+from configparser import ConfigParser
+
+from .config import CONFIG_DIR
+
 
 HOME = os.environ['HOME']
 FILE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -91,3 +96,11 @@ def removeUdevRule() -> int:
 
     else:
         return 0
+
+def createBackup() -> None:
+
+    undervolt_file = '/etc/intel-undervolt.conf'
+
+    zip_file = os.path.join(CONFIG_DIR, 'intel-undervolt.bak.zip')
+    with zipfile.ZipFile(zip_file, 'w') as backup_archive:
+        backup_archive.write(undervolt_file, 'intel-undervolt.conf')

@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Linux Undervolt Tool
-Version=0.2-2
+Version=0.3-2
 Type=Application
 Comment=GUI Interface for intel-undervolt
 
@@ -10,4 +10,4 @@ Categories=Utility;
 
 Terminal=False
 StartupNotify=True
-StartupWMClass=linux_undervolt
+StartupWMClass=linux-undervolt

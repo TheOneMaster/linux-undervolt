@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
+# GObject stuff
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('Notify', '0.7')
 from gi.repository import Gtk as gtk
 from gi.repository import Notify
 
+# Python default libraries
 from time import sleep
 from datetime import date
-
 import os
 
+# Local modules
 from . import config
 from . import backend
 
@@ -31,7 +33,7 @@ class MainWindow:
         self.builder = gtk.Builder()
 
         # Check if this is the first time the app is run
-        if not os.path.isfile(config.CONFIG_DIRECTORY):
+        if not os.path.isfile(config.CONFIG_FILE):
             return_code = self.firstTimeSetup()
 
             if return_code != gtk.ResponseType.OK:
@@ -54,7 +56,9 @@ class MainWindow:
         Notify.init("Linux Undervolt Tool")
         
         # Set correct profile button active
-        button_id = f"profile_{self.config.active_profile}_button"
+        active_profile = self.config.getSettings('profile')
+        button_id = f"profile_{active_profile}_button"
+        
         radio_button = self.builder.get_object(button_id)
         radio_button.set_active(True)
 
@@ -74,7 +78,9 @@ class MainWindow:
         prereqs = config.checkPrerequisites()
 
         if prereqs:
-            self.config = config.Config(configFile=None)
+            # Create config file & backup for intel-undervolt file
+            self.config = config.Config(configFile='')
+            backend.createBackup()
             response =  gtk.ResponseType.OK
 
         else:
@@ -144,7 +150,7 @@ class MainWindow:
         Activate or deactivate the power profile options according to settings.
         """
 
-        active = self.config.parser.getboolean('SETTINGS', 'battery_switch')
+        active = self.config._parser.getboolean('SETTINGS', 'battery_switch')
         
         switch = self.builder.get_object('power_switch')
         switch.set_active(active)

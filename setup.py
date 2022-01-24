@@ -18,7 +18,7 @@ setup(
     packages=['linux_undervolt'],
     include_package_data=True,
     entry_points={
-        'gui_scripts': ["linux_undervolt = linux_undervolt.main:main"]
+        'gui_scripts': ["linux-undervolt = linux_undervolt.__main__:main"]
     },
     data_files=[
         ('share/applications/', ['theonemaster-linux_undervolt.desktop'])

@@ -1,40 +1,43 @@
+#!/usr/bin/env python3
 import os
 import configparser
 import subprocess
 import tempfile
+import pathlib
 
+# Directories
 HOME = os.environ['HOME']
-CONFIG_DIRECTORY = os.path.join(HOME, '.config/linux-undervolt.conf')
+CONFIG_DIR = os.path.join(HOME, '.config/linux-undervolt/')
+CONFIG_FILE = os.path.join(CONFIG_DIR, 'linux-undervolt.conf')
 
 
 class Config:
 
-    def __init__(self, configFile=CONFIG_DIRECTORY):
+    def __init__(self, configFile=CONFIG_FILE):
         """
         docstring
         """
 
         # Define instance variables
-        self.parser = configparser.ConfigParser()
+        self._parser = configparser.ConfigParser()
         self.undervolt_file = None
-        self.active_profile = None
 
         if os.path.isfile(configFile):
-            self.parser.read(configFile)
+            self._parser.read(configFile)
         else:
-            self.createConfig()
+            self._createConfig()
+            pathlib.Path(CONFIG_DIR).mkdir(parents=True, exist_ok=True)
             self.saveChanges()
 
-        self.undervolt_file = self.parser['SETTINGS']['undervolt_path']
-        self.active_profile = self.parser['SETTINGS']['profile']
+        self.undervolt_file = self._parser['SETTINGS']['undervolt_path']
 
-    def createConfig(self) -> None:
+    def _createConfig(self) -> None:
         """
         Creates the configuration file for the application. Stores the general settings as well as profile-specific
         information.
         """
 
-        self.parser['SETTINGS'] = {
+        self._parser['SETTINGS'] = {
             'profile': 0,
             'undervolt_path': "/etc/intel-undervolt.conf",
             'battery_switch': 'false',
@@ -48,7 +51,7 @@ class Config:
 
         # Create default undervolt values for each profile in config file
         for index, profile in enumerate(profiles):
-            self.parser[str(index)] = profile
+            self._parser[str(index)] = profile
 
     #################################
     # Settings and Profiles methods #
@@ -56,7 +59,7 @@ class Config:
 
     def getSettings(self, setting=None) -> dict:
 
-        settings = self.parser['SETTINGS']
+        settings = self._parser['SETTINGS']
         settings = dict(settings)
 
         if setting:
@@ -71,9 +74,9 @@ class Config:
         """
 
         if profile_number is None:
-            profile_number = self.parser['SETTINGS']['profile']
+            profile_number = self._parser['SETTINGS']['profile']
 
-        settings = self.parser[profile_number]
+        settings = self._parser[profile_number]
         settings = dict(settings)
 
         return settings
@@ -88,11 +91,11 @@ class Config:
         new_value (str) - When a single setting is to be changed, provide the new value into this argument
         """
         if isinstance(setting, str):
-            self.parser['SETTINGS'][setting] = new_value
+            self._parser['SETTINGS'][setting] = new_value
 
         elif isinstance(setting, dict):
             for key, value in setting.items():
-                self.parser['SETTINGS'][key] = value
+                self._parser['SETTINGS'][key] = value
 
         else:
             raise TypeError
@@ -109,9 +112,9 @@ class Config:
                                 If no value is provided, defaults to the active profile. 
         """
         if profile is None:
-            profile = self.parser['SETTINGS']['profile']
+            profile = self._parser['SETTINGS']['profile']
 
-        self.parser[profile] = settings
+        self._parser[profile] = settings
 
         self.saveChanges()
 
@@ -122,14 +125,14 @@ class Config:
     def exportConfig(self, output):
 
         with open(output, 'w') as export_file:
-            self.parser.write(export_file)
+            self._parser.write(export_file)
 
     def saveChanges(self) -> None:
         """
         Save the profile settings to the config file.
         """
-        with open(CONFIG_DIRECTORY, 'w') as config_file:
-            self.parser.write(config_file)
+        with open(CONFIG_FILE, 'w') as config_file:
+            self._parser.write(config_file)
 
     def applyChanges(self) -> subprocess.CompletedProcess:
         """
