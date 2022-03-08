@@ -6,7 +6,7 @@ with open("README.md", 'r') as fh:
 
 
 setup(
-    name = "linux_undervolt-tool",
+    name = "linux-undervolt-tool",
     version = linux_undervolt.__version__,
     author = "TheOneMaster",
     author_email = "tmp@gmail.com",
@@ -21,7 +21,8 @@ setup(
         'gui_scripts': ["linux-undervolt = linux_undervolt.__main__:main"]
     },
     data_files=[
-        ('share/applications/', ['theonemaster-linux_undervolt.desktop'])
+        ('share/applications/', ['theonemaster-linux_undervolt.desktop']),
+        ('/opt/linux-undervolt', ['linux_undervolt/config.py'])
     ],
     classifiers=[
         "License :: OSI Approved :: GPLv2 License"

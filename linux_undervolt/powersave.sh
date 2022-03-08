@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# Copy Python files to opt directory
-SCRIPT_PATH=$(dirname $(realpath -s $0))
-
-cp "${SCRIPT_PATH}/config.py" "/opt/linux-undervolt/"
-
 # Move temp service to Systemd services
 mv "${1}/temp.service" "/etc/systemd/system/linux-undervolt.powersave.service"
 mv "${1}/temp.env" "/etc/systemd/system/linux-undervolt.powersave.env"

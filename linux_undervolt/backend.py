@@ -104,3 +104,17 @@ def createBackup() -> None:
     zip_file = os.path.join(CONFIG_DIR, 'intel-undervolt.bak.zip')
     with zipfile.ZipFile(zip_file, 'w') as backup_archive:
         backup_archive.write(undervolt_file, 'intel-undervolt.conf')
+
+def startupChange(value: int) -> None:
+    """
+    Set the startup behaviour for the undervolt. If on, the undervolt is applied on boot.
+    Should only be called after the undervolt settings have been tested by the user.
+    """
+    key = {
+        0: "stop",
+        1: "start"
+    }
+
+    command = f"pkexec systemctl {key[value]} intel-undervolt"
+    run = subprocess.run(command, shell=True, stdout=subprocess.DEVNULL)
+    return run.returncode

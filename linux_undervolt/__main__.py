@@ -49,9 +49,7 @@ class MainWindow:
         self.builder.connect_signals(self)
 
         # Initial setup
-        self.scaleChange()
-        self.powerSwitch()
-        self.getPowerProfiles()
+        self.__initialSetup__()
 
         Notify.init("Linux Undervolt Tool")
         
@@ -100,7 +98,18 @@ class MainWindow:
     # UI Changes #
     ##############
 
-    def scaleChange(self):
+    def __initialSetup__(self):
+        """
+        Initial UI Settings to be loaded when the app is starting. Reads config options from config file
+        and applies them to the various widgets.
+        """
+
+        self.__scaleChange__()
+        self.__getPowerProfiles__()
+        self.__powerSwitch__()
+        self.__startupMenuItem__()
+
+    def __scaleChange__(self):
         """
         Changes the scale values to the current profile values.
         """
@@ -119,7 +128,7 @@ class MainWindow:
         save_button = self.builder.get_object("save_button")
         save_button.set_label("Save")
 
-    def getPowerProfiles(self):
+    def __getPowerProfiles__(self):
         """
         Change power profile dropdowns to settings value.
         """
@@ -145,7 +154,7 @@ class MainWindow:
             ac_profile_dropdown.set_active(ac_profile)
             ac_profile_check.set_active(True)
 
-    def powerSwitch(self):
+    def __powerSwitch__(self):
         """
         Activate or deactivate the power profile options according to settings.
         """
@@ -160,6 +169,13 @@ class MainWindow:
             cur_obj = self.builder.get_object(object)
             cur_obj.set_sensitive(active)
 
+    def __startupMenuItem__(self):
+
+        active = self.config._parser.getboolean('SETTINGS', 'startup')
+        item = self.builder.get_object("startup_menu_item")
+
+        item.set_active(active)
+
     def onSliderChange(self, widget):
         """
         Changes the save button to be italicised when changes are made to the undervolt values.
@@ -172,6 +188,14 @@ class MainWindow:
     ####################
     # Config Functions #
     ####################
+
+    def startupChange(self, widget):
+
+        startup_value = 1 if widget.get_active() else 0
+
+        self.config.changeSettings('startup', str(startup_value))
+        backend.startupChange(startup_value)
+            
 
     def powerProfileActivate(self, _, state):
         """
@@ -188,7 +212,7 @@ class MainWindow:
                 return        
         
         self.config.changeSettings('battery_switch', state_str)
-        self.powerSwitch()
+        self.__powerSwitch__()
 
     def changeProfile(self, widget):
         """
@@ -204,7 +228,7 @@ class MainWindow:
                 self.config.changeSettings('profile', new_profile)
                 break
 
-        self.scaleChange()
+        self.__scaleChange__()
 
     def setPowerProfile(self, _):
         """

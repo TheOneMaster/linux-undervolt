@@ -42,7 +42,8 @@ class Config:
             'undervolt_path': "/etc/intel-undervolt.conf",
             'battery_switch': 'false',
             'battery_profile': "",
-            'ac_profile': ""
+            'ac_profile': "",
+            'startup': 0
         }
 
         profile_options = ['cpu', 'gpu', 'cpu_cache', 'sys_agent', 'analog_io']

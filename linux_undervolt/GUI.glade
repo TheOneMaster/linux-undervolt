@@ -124,6 +124,16 @@
                         <property name="use-underline">True</property>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkCheckMenuItem" id="startup_menu_item">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">Start on Boot</property>
+                        <property name="use-underline">True</property>
+                        <property name="draw-as-radio">True</property>
+                        <signal name="toggled" handler="startupChange" swapped="no"/>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -788,6 +798,9 @@
                     <property name="position">1</property>
                   </packing>
                 </child>
+                <style>
+                  <class name="inset-box"/>
+                </style>
               </object>
               <packing>
                 <property name="left-attach">1</property>
