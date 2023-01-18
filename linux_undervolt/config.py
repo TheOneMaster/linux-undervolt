@@ -43,7 +43,8 @@ class Config:
             'battery_switch': 'false',
             'battery_profile': "",
             'ac_profile': "",
-            'startup': 0
+            'startup': 0,
+            "advanced": 0
         }
 
         profile_options = ['cpu', 'gpu', 'cpu_cache', 'sys_agent', 'analog_io']
@@ -67,6 +68,10 @@ class Config:
             settings = settings[setting]
 
         return settings
+
+    def getBool(self, setting) -> bool:
+        return self._parser.getboolean('SETTINGS', setting)
+
 
     def getProfileSettings(self, profile_number=None) -> dict:
         """
