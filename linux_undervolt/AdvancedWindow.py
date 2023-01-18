@@ -5,15 +5,10 @@ gi.require_version("Notify", "0.7")
 from gi.repository import Gtk, Gdk, GObject
 from gi.repository import Notify
 
-import os
-
-from .terminal import TerminalOutput
 from .MainWindow import MainWindow
+from .terminal import TerminalOutput
 from . import config
 from .constants import ADVANCED_WINDOW
-
-
-# GLADE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "main_adv.glade")
 
 
 class AdvancedWindow(MainWindow):
@@ -28,7 +23,7 @@ class AdvancedWindow(MainWindow):
         self.__initialSetup__()
         
         self.topLevelWindow = self.builder.get_object("Main")
-        self.topLevelWindow.connect("destroy", Gtk.main_quit)
+        self.destroy_signal = self.topLevelWindow.connect("delete-event", Gtk.main_quit)
         
         
     def __initialSetup__(self) -> None:

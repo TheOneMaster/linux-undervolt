@@ -4,15 +4,13 @@ gi.require_version('Notify', '0.7')
 from gi.repository import Gtk as gtk
 from gi.repository import Notify
 
-import os
 from datetime import date
 from time import sleep
+
 
 from . import config
 from . import backend
 from .constants import MAIN_WINDOW
-
-# GLADE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GUI.glade")
 
 class MainWindow:
 
@@ -44,14 +42,14 @@ class MainWindow:
             return
         
         self.builder.add_from_file(MAIN_WINDOW)
-        self.builder.connect_signals(self)
-
+        
         # Initial setup
         self.__initialSetup__()
+        self.builder.connect_signals(self)
 
         # Show Main window
         self.topLevelWindow = self.builder.get_object("Main")
-        self.topLevelWindow.connect("delete-event", gtk.main_quit)
+        self.destroy_signal = self.topLevelWindow.connect("delete-event", gtk.main_quit)
 
     ##############
     # UI Changes #
@@ -139,7 +137,7 @@ class MainWindow:
 
     def __startupMenuItem__(self):
 
-        active = self.config._parser.getboolean('SETTINGS', 'startup')
+        active = self.config.getBool('startup')
         item = self.builder.get_object("startup_menu_item")
 
         item.set_active(active)
@@ -163,8 +161,28 @@ class MainWindow:
 
         self.config.changeSettings('startup', str(startup_value))
         backend.startupChange(startup_value)
+    
+    def toggleAdvanced(self, widget):
+        from .AdvancedWindow import AdvancedWindow
+        state = widget.get_active()
+        
+        self.config.changeSettings('advanced', str(state))
+        
+        if state:
+            window = AdvancedWindow()
+        else:
+            window = MainWindow()
             
-
+        
+        self.topLevelWindow.disconnect(self.destroy_signal)
+        self.topLevelWindow.destroy()
+        
+        self.destroy_signal = None
+        
+        window.topLevelWindow.connect("delete-event", gtk.main_quit)
+        window.topLevelWindow.show_all()
+    
+    
     def powerProfileActivate(self, _, state):
         """
         docstring
