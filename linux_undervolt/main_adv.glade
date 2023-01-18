@@ -45,7 +45,7 @@
   <object class="GtkApplicationWindow" id="Main">
     <property name="can-focus">False</property>
     <property name="title" translatable="yes">Linux Undervolt Tool (Advanced)</property>
-    <property name="default-width">650</property>
+    <property name="default-width">700</property>
     <property name="default-height">500</property>
     <child>
       <object class="GtkBox">
@@ -112,10 +112,11 @@
                     <child>
                       <object class="GtkCheckMenuItem">
                         <property name="visible">True</property>
-                        <property name="sensitive">False</property>
                         <property name="can-focus">False</property>
                         <property name="tooltip-text" translatable="yes">Currently WIP</property>
                         <property name="label" translatable="yes">Advanced Options</property>
+                        <property name="active">True</property>
+                        <signal name="toggled" handler="toggleAdvanced" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -176,6 +177,10 @@
               <object class="GtkGrid">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="margin-start">10</property>
+                <property name="margin-end">10</property>
+                <property name="margin-top">5</property>
+                <property name="margin-bottom">5</property>
                 <property name="row-spacing">12</property>
                 <property name="column-homogeneous">True</property>
                 <child>
@@ -237,6 +242,7 @@
                         <property name="label" translatable="yes">Profile</property>
                         <attributes>
                           <attribute name="weight" value="semibold"/>
+                          <attribute name="underline" value="True"/>
                         </attributes>
                       </object>
                       <packing>
@@ -548,8 +554,11 @@
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">&lt;b&gt;&lt;u&gt;Undervolting Options&lt;/u&gt;&lt;/b&gt;</property>
-                        <property name="use-markup">True</property>
+                        <property name="label" translatable="yes">Undervolting Options</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                          <attribute name="underline" value="True"/>
+                        </attributes>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -803,9 +812,21 @@
               </packing>
             </child>
             <child>
+              <object class="GtkSeparator">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkNotebook">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
+                <property name="margin-start">10</property>
                 <child>
                   <object class="GtkBox" id="live-power-tab">
                     <property name="visible">True</property>
@@ -854,7 +875,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">1</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
