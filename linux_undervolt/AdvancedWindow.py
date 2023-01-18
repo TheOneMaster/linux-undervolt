@@ -10,9 +10,10 @@ import os
 from .terminal import TerminalOutput
 from .MainWindow import MainWindow
 from . import config
+from .constants import ADVANCED_WINDOW
 
 
-GLADE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "main_adv.glade")
+# GLADE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "main_adv.glade")
 
 
 class AdvancedWindow(MainWindow):
@@ -21,7 +22,7 @@ class AdvancedWindow(MainWindow):
         self.config = config.Config()
         self.builder = Gtk.Builder()
         
-        self.builder.add_from_file(GLADE_FILE)
+        self.builder.add_from_file(ADVANCED_WINDOW)
         self.builder.connect_signals(self)
         
         self.__initialSetup__()

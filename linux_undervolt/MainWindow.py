@@ -5,11 +5,14 @@ from gi.repository import Gtk as gtk
 from gi.repository import Notify
 
 import os
+from datetime import date
+from time import sleep
 
 from . import config
 from . import backend
+from .constants import MAIN_WINDOW
 
-GLADE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GUI.glade")
+# GLADE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "GUI.glade")
 
 class MainWindow:
 
@@ -21,22 +24,26 @@ class MainWindow:
         'analog_io': 'anIO_scale'
     }
 
-    def __init__(self, glade_file: str = GLADE_FILE):
+    def __init__(self):
 
         # Define instance variables
-        self.config = None
+        self.config = config.Config()
         self.builder = gtk.Builder()
 
         # Check if this is the first time the app is run
-        if not os.path.isfile(config.CONFIG_FILE):
-            return_code = self.firstTimeSetup()
+        if not config.checkPrerequisites():
+            dialog = gtk.MessageDialog(
+                message_type=gtk.MessageType.ERROR,
+                buttons=gtk.ButtonsType.CLOSE,
+                text="""The prerequisites for this program have not been met. Please check whether you have the
+                required programs (intel-undervolt) properly installed."""
+            )
 
-            if return_code != gtk.ResponseType.OK:
-                return
-        else:
-            self.config = config.Config()
+            dialog.run()
+            dialog.destroy()
+            return
         
-        self.builder.add_from_file(GLADE_FILE)
+        self.builder.add_from_file(MAIN_WINDOW)
         self.builder.connect_signals(self)
 
         # Initial setup
@@ -45,36 +52,6 @@ class MainWindow:
         # Show Main window
         self.topLevelWindow = self.builder.get_object("Main")
         self.topLevelWindow.connect("delete-event", gtk.main_quit)
-        # self.topLevelWindow.show()
-
-    def firstTimeSetup(self) -> gtk.ResponseType:
-        """
-        Creates the initial files required for the application to run. This is only called the first time
-        the application is run. 
-        """
-
-        # Check whether intel-undervolt has been installed.
-
-        prereqs = config.checkPrerequisites()
-
-        if prereqs:
-            # Create config file & backup for intel-undervolt file
-            self.config = config.Config(configFile='')
-            backend.createBackup()
-            response =  gtk.ResponseType.OK
-
-        else:
-            dialog = gtk.MessageDialog(
-                message_type=gtk.MessageType.ERROR,
-                buttons=gtk.ButtonsType.CLOSE,
-                text="""The prerequisites for this program have not been met. Please check whether you have the
-                required programs (intel-undervolt) properly installed."""
-            )
-
-            response = dialog.run()
-            dialog.destroy()
-
-        return response
 
     ##############
     # UI Changes #

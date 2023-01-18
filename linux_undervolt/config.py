@@ -5,39 +5,24 @@ import subprocess
 import tempfile
 import pathlib
 
-# Directories
-HOME = os.environ['HOME']
-CONFIG_DIR = os.path.join(HOME, '.config/linux-undervolt/')
-CONFIG_FILE = os.path.join(CONFIG_DIR, 'linux-undervolt.conf')
-
+from .constants import CONFIG_DIR, CONFIG_FILE
 
 class Config:
+    
+    __slots__ = ("_parser", "undervolt_file")
 
     def __init__(self, configFile=CONFIG_FILE):
         """
         docstring
         """
-
-        # Define instance variables
         self._parser = configparser.ConfigParser()
-        self.undervolt_file = None
-
-        if os.path.isfile(configFile):
-            self._parser.read(configFile)
-        else:
-            self._createConfig()
-            pathlib.Path(CONFIG_DIR).mkdir(parents=True, exist_ok=True)
-            self.saveChanges()
-
         self.undervolt_file = self._parser['SETTINGS']['undervolt_path']
-
-    def _createConfig(self) -> None:
-        """
-        Creates the configuration file for the application. Stores the general settings as well as profile-specific
-        information.
-        """
-
-        self._parser['SETTINGS'] = {
+        
+    @classmethod
+    def create_config(cls) -> 'Config':
+        parser = configparser.ConfigParser()
+        
+        parser['SETTINGS'] = {
             'profile': 0,
             'undervolt_path': "/etc/intel-undervolt.conf",
             'battery_switch': 'false',
@@ -48,12 +33,18 @@ class Config:
         }
 
         profile_options = ['cpu', 'gpu', 'cpu_cache', 'sys_agent', 'analog_io']
-
         profiles = [{i: 0 for i in profile_options} for j in range(4)]
 
         # Create default undervolt values for each profile in config file
         for index, profile in enumerate(profiles):
-            self._parser[str(index)] = profile
+            parser[str(index)] = profile
+            
+        # Save file
+        pathlib.Path(CONFIG_DIR).mkdir(parents=True, exist_ok=True)
+        with open(CONFIG_FILE, "w") as config_out:
+            parser.write(config_out)
+            
+        return cls()
 
     #################################
     # Settings and Profiles methods #
@@ -200,6 +191,14 @@ class Config:
             final_run = subprocess.run(final_command, shell=True)
 
         return final_run
+
+
+
+
+def configExists() -> bool:
+    return os.path.isfile(CONFIG_FILE)
+        
+
 
 
 def checkPrerequisites() -> bool:

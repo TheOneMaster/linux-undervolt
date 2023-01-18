@@ -5,10 +5,15 @@ from gi.repository import Gtk
 
 from .MainWindow import MainWindow
 from .AdvancedWindow import AdvancedWindow
-from .config import Config
+from .config import Config, configExists
+from .backend import createBackup
 
 if __name__ == "__main__":
     
+    if not configExists():
+        Config.create_config()
+        createBackup()
+        
     config = Config()
     
     window = None
@@ -16,6 +21,9 @@ if __name__ == "__main__":
         window = AdvancedWindow()
     else:
         window = MainWindow()
-    
-    window.topLevelWindow.show_all()
-    Gtk.main()
+        
+    try:
+        window.topLevelWindow.show_all()
+        Gtk.main()
+    except:
+        pass
