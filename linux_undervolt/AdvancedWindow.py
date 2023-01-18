@@ -5,6 +5,8 @@ gi.require_version("Notify", "0.7")
 from gi.repository import Gtk, Gdk, GObject
 from gi.repository import Notify
 
+import logging
+
 from .MainWindow import MainWindow
 from .terminal import TerminalOutput
 from . import config
@@ -14,16 +16,19 @@ from .constants import ADVANCED_WINDOW
 class AdvancedWindow(MainWindow):
     
     def __init__(self):
+        self.logger = logging.getLogger(self.__class__.__name__)
+        
         self.config = config.Config()
         self.builder = Gtk.Builder()
         
-        self.builder.add_from_file(ADVANCED_WINDOW)
-        self.builder.connect_signals(self)
+        self.builder.add_from_file(ADVANCED_WINDOW)        
         
         self.__initialSetup__()
+        self.builder.connect_signals(self)
         
         self.topLevelWindow = self.builder.get_object("Main")
         self.destroy_signal = self.topLevelWindow.connect("delete-event", Gtk.main_quit)
+        self.logger.debug("Finished setup for main window")
         
         
     def __initialSetup__(self) -> None:

@@ -6,6 +6,7 @@ from gi.repository import Notify
 
 from datetime import date
 from time import sleep
+import logging
 
 
 from . import config
@@ -23,6 +24,8 @@ class MainWindow:
     }
 
     def __init__(self):
+        
+        self.logger = logging.getLogger(self.__class__.__name__)
 
         # Define instance variables
         self.config = config.Config()
@@ -37,6 +40,8 @@ class MainWindow:
                 required programs (intel-undervolt) properly installed."""
             )
 
+            self.logger.error("intel-undervolt not installed. Install the package before running this program")
+            
             dialog.run()
             dialog.destroy()
             return
@@ -50,6 +55,8 @@ class MainWindow:
         # Show Main window
         self.topLevelWindow = self.builder.get_object("Main")
         self.destroy_signal = self.topLevelWindow.connect("delete-event", gtk.main_quit)
+        
+        self.logger.debug("Finished setup for main window")
 
     ##############
     # UI Changes #
@@ -181,6 +188,10 @@ class MainWindow:
         
         window.topLevelWindow.connect("delete-event", gtk.main_quit)
         window.topLevelWindow.show_all()
+        
+        mode = "advanced" if state else "simple"
+        
+        self.logger.info(f"Changed to {mode} mode.")
     
     
     def powerProfileActivate(self, _, state):

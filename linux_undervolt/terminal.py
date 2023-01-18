@@ -15,8 +15,6 @@ class TerminalOutput(Gtk.ScrolledWindow):
     def __init__(self, parent, *args,):
         super().__init__(*args)
         
-        # self.resize(100, 500)
-        
         self.logger = logging.getLogger(self.__class__.__name__)
         
         self.__parent = parent
@@ -48,6 +46,7 @@ class TerminalOutput(Gtk.ScrolledWindow):
         
         self.__lastCommand = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         GObject.timeout_add(1000, lambda: self.update_terminal(self.__lastCommand.stdout))
+        self.logger.info(f"Terminal with command '{command}' added")
         
     
     def non_block_read(self, output) -> str:
