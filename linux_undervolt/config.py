@@ -16,6 +16,7 @@ class Config:
         docstring
         """
         self._parser = configparser.ConfigParser()
+        self._parser.read(configFile)
         self.undervolt_file = self._parser['SETTINGS']['undervolt_path']
         
     @classmethod
