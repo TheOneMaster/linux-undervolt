@@ -23,28 +23,14 @@ class MainWindow:
         'analog_io': 'anIO_scale'
     }
 
-    def __init__(self):
+    def __init__(self, first_time=False):
         
         self.logger = logging.getLogger(self.__class__.__name__)
-
-        # Define instance variables
+        if first_time:
+            self.__firstTimeSetup__()
+        
         self.config = config.Config()
         self.builder = gtk.Builder()
-
-        # Check if this is the first time the app is run
-        if not config.checkPrerequisites():
-            dialog = gtk.MessageDialog(
-                message_type=gtk.MessageType.ERROR,
-                buttons=gtk.ButtonsType.CLOSE,
-                text="""The prerequisites for this program have not been met. Please check whether you have the
-                required programs (intel-undervolt) properly installed."""
-            )
-
-            self.logger.error("intel-undervolt not installed. Install the package before running this program")
-            
-            dialog.run()
-            dialog.destroy()
-            return
         
         self.builder.add_from_file(MAIN_WINDOW)
         
@@ -58,9 +44,33 @@ class MainWindow:
         
         self.logger.debug("Finished setup for main window")
 
+    def __firstTimeSetup__(self) -> None:
+        self.logger.debug("First time setup")
+        if not config.checkPrerequisites():
+            dialog = gtk.MessageDialog(
+                message_type=gtk.MessageType.ERROR,
+                buttons=gtk.ButtonsType.CLOSE,
+                text="""The prerequisites for this program have not been met. Please check whether you have the
+                required programs (intel-undervolt) properly installed."""
+            )
+            dialog.run()
+            dialog.destroy()
+            self.logger.error("Intel undervolt not installed. Exiting program.")
+            raise RuntimeError("Intel undervolt not installed")
+        
+        # Initial setup creation
+        self.logger.debug("Creating config file...")
+        config.Config.create_config()
+        self.logger.debug("Created config file.")
+        
+        self.logger.debug("Creating backup of intel-undervolt.conf")
+        backend.createBackup()
+        self.logger.debug("Created backup of intel-undervolt settings")
+    
     ##############
     # UI Changes #
     ##############
+    
 
     def __initialSetup__(self) -> None:
         """
@@ -97,6 +107,8 @@ class MainWindow:
             # Values are stored as strings thus need to be converted to int
             value = int(value)
             scale.set_value(value)
+            
+        self.logger.info(f"Set scales to Profile {self.config.getActiveProfile()} settings")
 
         save_button = self.builder.get_object("save_button")
         save_button.set_label("Save")
