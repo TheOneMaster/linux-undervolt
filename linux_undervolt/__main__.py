@@ -8,22 +8,20 @@ from .AdvancedWindow import AdvancedWindow
 from .config import Config, configExists
 from .backend import createBackup
 
-if __name__ == "__main__":
-    
-    if not configExists():
-        Config.create_config()
-        createBackup()
-        
-    config = Config()
-    
+def main() -> None:
     window = None
-    if config.getBool("advanced"):
-        window = AdvancedWindow()
+    if not configExists():
+        window = MainWindow(True)
     else:
-        window = MainWindow()
+        advanced = Config().getBool("advanced")
+        window = AdvancedWindow() if advanced else MainWindow()
         
     try:
         window.topLevelWindow.show_all()
-        Gtk.main()
-    except:
+    except RuntimeError:
         pass
+    
+    Gtk.main()
+
+if __name__ == "__main__":
+    main()
