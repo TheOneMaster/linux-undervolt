@@ -4,17 +4,19 @@ import configparser
 import subprocess
 import tempfile
 import pathlib
+import logging
 
 from .constants import CONFIG_DIR, CONFIG_FILE
 
 class Config:
     
-    __slots__ = ("_parser", "undervolt_file")
+    __slots__ = ("_parser", "undervolt_file", "logger")
 
     def __init__(self, configFile=CONFIG_FILE):
         """
         docstring
         """
+        self.logger = logging.getLogger(self.__class__.__name__)
         self._parser = configparser.ConfigParser()
         self._parser.read(configFile)
         self.undervolt_file = self._parser['SETTINGS']['undervolt_path']
@@ -44,7 +46,7 @@ class Config:
         pathlib.Path(CONFIG_DIR).mkdir(parents=True, exist_ok=True)
         with open(CONFIG_FILE, "w") as config_out:
             parser.write(config_out)
-            
+        
         return cls()
 
     #################################
@@ -64,6 +66,9 @@ class Config:
     def getBool(self, setting) -> bool:
         return self._parser.getboolean('SETTINGS', setting)
 
+    def getActiveProfile(self) -> int:
+        active_profile = self._parser['SETTINGS']['profile']
+        return int(active_profile)
 
     def getProfileSettings(self, profile_number=None) -> dict:
         """
