@@ -1,3 +1,5 @@
+from typing import Optional
+
 import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version('Notify', '0.7')
@@ -23,15 +25,12 @@ class MainWindow:
         'analog_io': 'anIO_scale'
     }
 
-    def __init__(self, first_time=False):
+    def __init__(self, config):
         
         self.logger = logging.getLogger(self.__class__.__name__)
-        if first_time:
-            self.__firstTimeSetup__()
+        self.config = config
         
-        self.config = config.Config()
         self.builder = gtk.Builder()
-        
         self.builder.add_from_file(MAIN_WINDOW)
         
         # Initial setup
@@ -39,33 +38,10 @@ class MainWindow:
         self.builder.connect_signals(self)
 
         # Show Main window
-        self.topLevelWindow = self.builder.get_object("Main")
-        self.destroy_signal = self.topLevelWindow.connect("delete-event", gtk.main_quit)
+        self.topLevelWindow: gtk.Window = self.builder.get_object("Main")
+        # self.destroy_signal = self.topLevelWindow.connect("delete-event", gtk.main_quit)
         
         self.logger.debug("Finished setup for main window")
-
-    def __firstTimeSetup__(self) -> None:
-        self.logger.debug("First time setup")
-        if not config.checkPrerequisites():
-            dialog = gtk.MessageDialog(
-                message_type=gtk.MessageType.ERROR,
-                buttons=gtk.ButtonsType.CLOSE,
-                text="""The prerequisites for this program have not been met. Please check whether you have the
-                required programs (intel-undervolt) properly installed."""
-            )
-            dialog.run()
-            dialog.destroy()
-            self.logger.error("Intel undervolt not installed. Exiting program.")
-            raise RuntimeError("Intel undervolt not installed")
-        
-        # Initial setup creation
-        self.logger.debug("Creating config file...")
-        config.Config.create_config()
-        self.logger.debug("Created config file.")
-        
-        self.logger.debug("Creating backup of intel-undervolt.conf")
-        backend.createBackup()
-        self.logger.debug("Created backup of intel-undervolt settings")
     
     ##############
     # UI Changes #
@@ -83,7 +59,7 @@ class MainWindow:
         self.__powerSwitch__()
         self.__startupMenuItem__()
         
-        Notify.init("Linux Undervolt Tool")
+        # Notify.init("Linux Undervolt Tool")
         
         # Set correct profile button active
         active_profile = self.config.getSettings('profile')
@@ -175,61 +151,16 @@ class MainWindow:
     ####################
 
     def startupChange(self, widget) -> None:
-
         startup_value = 1 if widget.get_active() else 0
-
         self.config.changeSettings('startup', str(startup_value))
         backend.startupChange(startup_value)
-    
-    def toggleAdvanced(self, widget) -> None:
-        from .AdvancedWindow import AdvancedWindow
-        state = widget.get_active()
-        
-        self.config.changeSettings('advanced', str(state))
-        
-        if state:
-            window = AdvancedWindow()
-        else:
-            window = MainWindow()
-            
-        
-        self.topLevelWindow.disconnect(self.destroy_signal)
-        self.topLevelWindow.destroy()
-        
-        self.destroy_signal = None
-        
-        window.topLevelWindow.connect("delete-event", gtk.main_quit)
-        window.topLevelWindow.show_all()
-        
-        mode = "advanced" if state else "simple"
-        
-        self.logger.info(f"Changed to {mode} mode.")
-    
-    def powerProfileActivate(self, _, state) -> None:
-        """
-        docstring
-        """
-
-        state_str = str(state).lower()
-        
-        if not state:
-            run = backend.removeUdevRule()
-
-            # If the run fails, do not change the UI. TODO: Add error message stating that the run failed.
-            if run:
-                return        
-        
-        self.config.changeSettings('battery_switch', state_str)
-        self.__powerSwitch__()
 
     def changeProfile(self, widget) -> None:
         """
         Change the undervolt profile based on which radiobutton is selected. Also redraws the scales based on the new
         profile's settings.
         """
-        
         group_list = widget.get_group()
-
         for option in group_list:
             if option.get_active():
                 new_profile = option.get_label()
@@ -242,7 +173,6 @@ class MainWindow:
         """
         docstring
         """
-
         options = {
             "ac_profile": "",
             "battery_profile": ""
@@ -293,57 +223,6 @@ class MainWindow:
             dialog.run()
             dialog.destroy()
 
-    def importConfig(self, _) -> None:
-
-        dialog = gtk.FileChooserDialog(
-            title="Choose import file",
-            action=gtk.FileChooserAction.OPEN
-        )
-
-        dialog.add_buttons(
-            gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
-            gtk.STOCK_OPEN, gtk.ResponseType.OK
-        )
-
-        file_filter = gtk.FileFilter()
-        file_filter.set_name("Config File")
-        file_filter.add_pattern("*.conf")
-
-        dialog.add_filter(file_filter)
-
-        response = dialog.run()
-
-        if response == gtk.ResponseType.OK:
-            filename = dialog.get_filename()
-            self.config = config.Config(filename)
-            self.config.saveChanges()
-        
-        dialog.destroy()
-
-    def exportConfig(self, _) -> None:
-        
-        dialog = gtk.FileChooserDialog(
-            title="Select export file",
-            action=gtk.FileChooserAction.SAVE
-        )
-
-        # Set default export file name
-        file_name = date.today().isoformat()
-        file_name = f"{file_name}_linux-undervolt.conf"
-        dialog.set_current_name(file_name)
-
-        dialog.add_buttons(
-            gtk.STOCK_SAVE, gtk.ResponseType.OK,
-            gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL
-        )
-
-        response = dialog.run()
-
-        if response == gtk.ResponseType.OK:
-            self.config.exportConfig(dialog.get_filename())
-        
-        dialog.destroy()
-
     def saveProfile(self, _) -> None:
         """
         Save scale values to the profile in the config
@@ -367,49 +246,4 @@ class MainWindow:
 
         save_button = self.builder.get_object("save_button")
         save_button.set_label("Save")
-
-    def applyProfile(self, _) -> None:
-        """
-        Apply the undervolt from the current profile values.
-        """
-        
-        code = self.config.applyChanges().returncode
-        sleep(0.3)
-
-        if not code:
-            Notify.Notification.new(
-                summary="Profile Applied",
-                body=f"Profile {self.config.getSettings('profile')}'s settings were applied."
-            ).show()
-        else:
-            dialog = gtk.MessageDialog(
-                message_type=gtk.MessageType.ERROR,
-                buttons=gtk.ButtonsType.OK,
-                text='Something Failed. Undervolt not applied.'
-            )
-
-            dialog.run()
-            dialog.destroy() 
-
-    ##################
-    # Menu Functions #
-    ##################
-    
-    def about(self, _) -> None:
-        dialog = gtk.MessageDialog(
-            message_type=gtk.MessageType.INFO,
-            transient_for=self.topLevelWindow,
-            flags=0,
-            buttons=gtk.ButtonsType.OK,
-            text="About"
-        )
-        
-        dialog.format_secondary_markup(
-            'This tool was made using Python and GTK.'
-            ' Find the source code at <a href="https://github.com/TheOneMaster/linux-undervolt">the Github repository</a>.'
-        )
-        
-        self.logger.info("Showed about dialog")
-        dialog.run()
-        dialog.destroy()
     

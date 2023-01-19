@@ -2,32 +2,33 @@
 import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version("Notify", "0.7")
-from gi.repository import Gtk, Gdk, GObject
+from gi.repository import Gtk, GObject
 from gi.repository import Notify
 
 import logging
 
 from .MainWindow import MainWindow
 from .TerminalOutput import TerminalOutput
-from . import config
 from .constants import ADVANCED_WINDOW
 
 
 class AdvancedWindow(MainWindow):
     
-    def __init__(self):
+    def __init__(self, config):
         self.logger = logging.getLogger(self.__class__.__name__)
         
-        self.config = config.Config()
+        self.config = config
         self.builder = Gtk.Builder()
         
         self.builder.add_from_file(ADVANCED_WINDOW)        
         
+        self.timers = []
         self.__initialSetup__()
         self.builder.connect_signals(self)
         
-        self.topLevelWindow = self.builder.get_object("Main")
-        self.destroy_signal = self.topLevelWindow.connect("delete-event", Gtk.main_quit)
+        self.topLevelWindow: Gtk.ApplicationWindow = self.builder.get_object("Main")
+        self.topLevelWindow.connect("delete-event", self.on_quit)
+        
         self.logger.debug("Finished setup for main window")
         
         
@@ -44,7 +45,9 @@ class AdvancedWindow(MainWindow):
         box1.add(term1)
         
         # Run with delay so that the password prompt only shows up after the main GUI, and is focused
-        GObject.timeout_add(1000, lambda: self.__termCommand__(term1, "pkexec intel-undervolt measure"))
+        timer = GObject.timeout_add(1000, lambda: self.__termCommand__(term1, "pkexec intel-undervolt measure"))
+        self.timers.append(timer)
+        # term1.runCommand("intel-undervolt measure")
         # term1.runCommand("pkexec intel-undervolt measure")
         self.logger.debug("Finished 1st tab setup")
         
@@ -60,6 +63,10 @@ class AdvancedWindow(MainWindow):
     def __termCommand__(self, term: TerminalOutput, command: str):
         term.runCommand(command)
         return False
+
+    def on_quit(self, action, parameter) -> None:
+        for i in self.timers:
+            GObject.source_remove(i)
 
 if __name__ == "__main__":
     window = AdvancedWindow()

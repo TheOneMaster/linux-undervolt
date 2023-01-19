@@ -63,8 +63,11 @@ class Config:
 
         return settings
 
-    def getBool(self, setting) -> bool:
+    def getBool(self, setting: str) -> bool:
         return self._parser.getboolean('SETTINGS', setting)
+
+    def getInt(self, setting: str) -> int:
+        return self._parser.getint("SETTINGS", setting)
 
     def getActiveProfile(self) -> int:
         active_profile = self._parser['SETTINGS']['profile']
@@ -103,7 +106,7 @@ class Config:
         else:
             raise TypeError
 
-        self.saveChanges()
+        self.save()
 
     def changeProfileSettings(self, settings: dict, profile=None) -> None:
         """
@@ -119,22 +122,17 @@ class Config:
 
         self._parser[profile] = settings
 
-        self.saveChanges()
+        self.save()
 
     ########################
     # Save & Apply changes #
     ########################
 
-    def exportConfig(self, output):
-
-        with open(output, 'w') as export_file:
-            self._parser.write(export_file)
-
-    def saveChanges(self) -> None:
+    def save(self, outFile = CONFIG_FILE) -> None:
         """
         Save the profile settings to the config file.
         """
-        with open(CONFIG_FILE, 'w') as config_file:
+        with open(outFile, 'w') as config_file:
             self._parser.write(config_file)
 
     def applyChanges(self) -> subprocess.CompletedProcess:
@@ -194,7 +192,7 @@ class Config:
             # Move the undervolt file to the correct place and apply the undervolt. Requires root priviliges.
             final_command = f"pkexec sh -c '{command_1} ; {command_2}'"
 
-            final_run = subprocess.run(final_command, shell=True)
+            final_run = subprocess.run(final_command, shell=True, stdout=subprocess.DEVNULL)
 
         return final_run
 

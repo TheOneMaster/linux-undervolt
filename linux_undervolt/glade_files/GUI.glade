@@ -94,18 +94,18 @@
                       <object class="GtkMenuItem">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="action-name">app.import_config</property>
                         <property name="label" translatable="yes">Import Settings</property>
                         <property name="use-underline">True</property>
-                        <signal name="activate" handler="importConfig" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkMenuItem">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="action-name">app.export_config</property>
                         <property name="label" translatable="yes">Export Settings</property>
                         <property name="use-underline">True</property>
-                        <signal name="activate" handler="exportConfig" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -119,9 +119,9 @@
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="tooltip-text" translatable="yes">Currently WIP</property>
+                        <property name="action-name">app.toggle_advanced</property>
                         <property name="label" translatable="yes">Advanced Options</property>
                         <property name="use-underline">True</property>
-                        <signal name="toggled" handler="toggleAdvanced" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -152,9 +152,9 @@
                       <object class="GtkMenuItem">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="action-name">app.about</property>
                         <property name="label" translatable="yes">About</property>
                         <property name="use-underline">True</property>
-                        <signal name="activate" handler="about" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -217,7 +217,7 @@
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
-                    <signal name="clicked" handler="applyProfile" swapped="no"/>
+                    <property name="action-name">app.apply_profile</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -383,7 +383,7 @@
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="halign">center</property>
-                        <signal name="state-set" handler="powerProfileActivate" swapped="no"/>
+                        <property name="action-name">app.power_profile_toggle</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
