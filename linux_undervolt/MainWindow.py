@@ -82,7 +82,7 @@ class MainWindow:
         radio_button = self.builder.get_object(button_id)
         radio_button.set_active(True)
 
-    def __scaleChange__(self):
+    def __scaleChange__(self) -> None:
         """
         Changes the scale values to the current profile values.
         """
@@ -101,7 +101,7 @@ class MainWindow:
         save_button = self.builder.get_object("save_button")
         save_button.set_label("Save")
 
-    def __getPowerProfiles__(self):
+    def __getPowerProfiles__(self) -> None:
         """
         Change power profile dropdowns to settings value.
         """
@@ -127,7 +127,7 @@ class MainWindow:
             ac_profile_dropdown.set_active(ac_profile)
             ac_profile_check.set_active(True)
 
-    def __powerSwitch__(self):
+    def __powerSwitch__(self) -> None:
         """
         Activate or deactivate the power profile options according to settings.
         """
@@ -142,14 +142,14 @@ class MainWindow:
             cur_obj = self.builder.get_object(object)
             cur_obj.set_sensitive(active)
 
-    def __startupMenuItem__(self):
+    def __startupMenuItem__(self) -> None:
 
         active = self.config.getBool('startup')
         item = self.builder.get_object("startup_menu_item")
 
         item.set_active(active)
 
-    def onSliderChange(self, widget):
+    def onSliderChange(self, widget) -> None:
         """
         Changes the save button to be italicised when changes are made to the undervolt values.
         """
@@ -162,14 +162,14 @@ class MainWindow:
     # Config Functions #
     ####################
 
-    def startupChange(self, widget):
+    def startupChange(self, widget) -> None:
 
         startup_value = 1 if widget.get_active() else 0
 
         self.config.changeSettings('startup', str(startup_value))
         backend.startupChange(startup_value)
     
-    def toggleAdvanced(self, widget):
+    def toggleAdvanced(self, widget) -> None:
         from .AdvancedWindow import AdvancedWindow
         state = widget.get_active()
         
@@ -193,8 +193,7 @@ class MainWindow:
         
         self.logger.info(f"Changed to {mode} mode.")
     
-    
-    def powerProfileActivate(self, _, state):
+    def powerProfileActivate(self, _, state) -> None:
         """
         docstring
         """
@@ -211,7 +210,7 @@ class MainWindow:
         self.config.changeSettings('battery_switch', state_str)
         self.__powerSwitch__()
 
-    def changeProfile(self, widget):
+    def changeProfile(self, widget) -> None:
         """
         Change the undervolt profile based on which radiobutton is selected. Also redraws the scales based on the new
         profile's settings.
@@ -227,7 +226,7 @@ class MainWindow:
 
         self.__scaleChange__()
 
-    def setPowerProfile(self, _):
+    def setPowerProfile(self, _) -> None:
         """
         docstring
         """
@@ -282,7 +281,7 @@ class MainWindow:
             dialog.run()
             dialog.destroy()
 
-    def importConfig(self, _):
+    def importConfig(self, _) -> None:
 
         dialog = gtk.FileChooserDialog(
             title="Choose import file",
@@ -309,7 +308,7 @@ class MainWindow:
         
         dialog.destroy()
 
-    def exportConfig(self, _):
+    def exportConfig(self, _) -> None:
         
         dialog = gtk.FileChooserDialog(
             title="Select export file",
@@ -333,7 +332,7 @@ class MainWindow:
         
         dialog.destroy()
 
-    def saveProfile(self, _):
+    def saveProfile(self, _) -> None:
         """
         Save scale values to the profile in the config
         """
@@ -357,7 +356,7 @@ class MainWindow:
         save_button = self.builder.get_object("save_button")
         save_button.set_label("Save")
 
-    def applyProfile(self, _):
+    def applyProfile(self, _) -> None:
         """
         Apply the undervolt from the current profile values.
         """
@@ -379,3 +378,26 @@ class MainWindow:
 
             dialog.run()
             dialog.destroy() 
+
+    ##################
+    # Menu Functions #
+    ##################
+    
+    def about(self, _) -> None:
+        dialog = gtk.MessageDialog(
+            message_type=gtk.MessageType.INFO,
+            transient_for=self.topLevelWindow,
+            flags=0,
+            buttons=gtk.ButtonsType.OK,
+            text="About"
+        )
+        
+        dialog.format_secondary_markup(
+            'This tool was made using Python and GTK.'
+            ' Find the source code at <a href="https://github.com/TheOneMaster/linux-undervolt">the Github repository</a>.'
+        )
+        
+        self.logger.info("Showed about dialog")
+        dialog.run()
+        dialog.destroy()
+    
