@@ -47,7 +47,7 @@ class AdvancedWindow(MainWindow):
         # 2nd Tab
         box2 = self.builder.get_object("current-undervolt-tab")
         term2 = TerminalOutput(box2)
-        term2.output.get_buffer().set_text("Unable to add this until I understand PolKit or I I'll be spammed with sudo requests.")
+        term2.output.get_buffer().set_text("Unable to add this until I understand PolKit or I'll be spammed with sudo requests.")
         box2.pack_start(term2, True, True, 0)
     
     def __termCommand__(self, term: TerminalOutput, command: str):
