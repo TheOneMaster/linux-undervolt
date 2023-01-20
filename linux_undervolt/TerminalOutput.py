@@ -47,6 +47,7 @@ class TerminalOutput(Gtk.ScrolledWindow):
         self.__lastCommand = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         GObject.timeout_add(1000, lambda: self.update_terminal(self.__lastCommand.stdout))
         self.logger.info(f"Terminal with command '{command}' added")
+        return False
         
     
     def non_block_read(self, output) -> str:
@@ -61,4 +62,8 @@ class TerminalOutput(Gtk.ScrolledWindow):
     def update_terminal(self, stdout):
         self.output.get_buffer().set_text(self.non_block_read(stdout))
         return self.__lastCommand.poll() is None
+    
+    def end_command(self) -> None:
+        if self.__lastCommand is not None:
+            self.__lastCommand.terminate()
         

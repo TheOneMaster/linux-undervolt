@@ -22,13 +22,12 @@ class AdvancedWindow(MainWindow):
         
         self.builder.add_from_file(ADVANCED_WINDOW)        
         
-        self.timers = []
+        self.terminals: list[TerminalOutput] = []
         self.__initialSetup__()
         self.builder.connect_signals(self)
         
-        self.topLevelWindow: Gtk.ApplicationWindow = self.builder.get_object("Main")
-        self.topLevelWindow.connect("delete-event", self.on_quit)
-        
+        self.topLevelWindow = self.builder.get_object("Main")
+        self.destroy_signal = self.topLevelWindow.connect("destroy", Gtk.main_quit)
         self.logger.debug("Finished setup for main window")
         
         
@@ -45,10 +44,8 @@ class AdvancedWindow(MainWindow):
         box1.add(term1)
         
         # Run with delay so that the password prompt only shows up after the main GUI, and is focused
-        timer = GObject.timeout_add(1000, lambda: self.__termCommand__(term1, "pkexec intel-undervolt measure"))
-        self.timers.append(timer)
-        # term1.runCommand("intel-undervolt measure")
-        # term1.runCommand("pkexec intel-undervolt measure")
+        GObject.timeout_add(1000, term1.runCommand, 'pkexec intel-undervolt measure')
+        
         self.logger.debug("Finished 1st tab setup")
         
         # 2nd Tab
@@ -59,14 +56,17 @@ class AdvancedWindow(MainWindow):
             " If someone wants to work on this and help me out or pull request this functionality, that'd be great.")
         box2.add(term2)
         self.logger.debug("Finished 2nd tab setup")
+        
+        self.terminals.append(term1)
+        self.terminals.append(term2)
     
     def __termCommand__(self, term: TerminalOutput, command: str):
         term.runCommand(command)
         return False
 
-    def on_quit(self, action, parameter) -> None:
-        for i in self.timers:
-            GObject.source_remove(i)
+    def on_quit(self, action) -> None:
+        for terminal in self.terminals:
+            terminal.end_command()
 
 if __name__ == "__main__":
     window = AdvancedWindow()
