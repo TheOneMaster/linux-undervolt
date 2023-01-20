@@ -212,7 +212,7 @@
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="receives-default">True</property>
-                        <property name="action-name">app.toggle_advanced</property>
+                        <property name="action-name">app.apply_profile</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
