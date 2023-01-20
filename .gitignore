@@ -1,8 +1,14 @@
 # Directories
-/__pycache__
+**__pycache__
 /.vscode
 /builds
-/linux_undervolt/__pycache__
+
+# Build stuff
+/deb_dist
+/dist
+*.egg-info
+*.tar.gz
+
 
 # Files
 scratch.py

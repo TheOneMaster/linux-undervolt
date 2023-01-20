@@ -1,2 +1,5 @@
-include linux_undervolt/GUI.glade
+include linux_undervolt/glade_files/GUI.glade
+include linux_undervolt/glade_files/main_adv.glade
+
 include linux_undervolt/powersave.sh
+include README.md
