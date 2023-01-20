@@ -6,10 +6,7 @@ import zipfile
 from configparser import ConfigParser
 
 from .config import CONFIG_DIR
-
-
-HOME = os.environ['HOME']
-FILE_DIR = os.path.dirname(os.path.abspath(__file__))
+from .constants import HOME, FILE_DIR
 
 def createUdevRule(options: dict) -> None:
     """

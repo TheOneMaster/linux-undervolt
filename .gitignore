@@ -6,6 +6,5 @@
 
 # Files
 scratch.py
-GUI.glade~
-\#GUI.glade\#
-
+**.glade?
+**test*
