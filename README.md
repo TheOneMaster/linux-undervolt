@@ -1,4 +1,4 @@
-# Linux Undervolt Tool
+<h1 align=center> Linux Undervolt Tool</h1>
 
 A fairly simple GTK tool built to mimic the basic functionality of ThrottleStop on Windows. Acts as a GUI so users are able to tell what they are doing without fiddling with the terminal.
 
@@ -28,9 +28,9 @@ What the GUI currently looks like:
 * Set Profile for AC/BAT
 * 4 profiles to quickswitch between (only 1 in intel-undervolt)
 * Import/Export settings
+* Advanced options
 * Live System Power consumption readout (advanced mode)
 ### TODO:
 
 * Add CPU info tab
 * Add buttons for toggles in intel-undervolt (daemon mode, enable)
-* Create power user settings toggle that enables more advanced features

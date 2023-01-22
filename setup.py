@@ -1,8 +1,9 @@
 from setuptools import setup
 import linux_undervolt
 
-with open("README.md", 'r') as fh:
-    long_description = fh.read()
+def readme() -> str:
+    with open("README.md", 'r') as f:
+        return f.read()
 
 
 setup(
@@ -11,14 +12,15 @@ setup(
     author = "TheOneMaster",
     author_email = "tmp@gmail.com",
     description = "GUI Frontend for intel-undervolt",
-    long_description=long_description,
+    long_description=readme(),
     long_description_content_type="text/markdown",
     license="GPLv2",
     url="https://github.com/TheOneMaster/linux-undervolt",
     packages=['linux_undervolt'],
     include_package_data=True,
     entry_points={
-        'gui_scripts': ["linux-undervolt = linux_undervolt.__main__:main"]
+        'gui_scripts': ["linux-undervolt = linux_undervolt.__main__:main"],
+        'console_scripts': ["linux-undervolt = linux_undervolt.config:cli"]
     },
     data_files=[
         ('share/applications/', ['theonemaster-linux_undervolt.desktop']),

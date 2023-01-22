@@ -216,7 +216,7 @@ def checkPrerequisites() -> bool:
     return check
 
 
-def main():
+def cli():
     """
     Command line interface to change some settings. Should not be called from GUI.
     """
@@ -237,4 +237,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    cli()
