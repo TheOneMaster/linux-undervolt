@@ -59,8 +59,6 @@ class MainWindow:
         self.__powerSwitch__()
         self.__startupMenuItem__()
         
-        # Notify.init("Linux Undervolt Tool")
-        
         # Set correct profile button active
         active_profile = self.config.getSettings('profile')
         button_id = f"profile_{active_profile}_button"

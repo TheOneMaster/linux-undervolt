@@ -31,7 +31,6 @@ class TerminalOutput(Gtk.ScrolledWindow):
         self.output.set_editable(False)
         self.output.set_cursor_visible(False)
         self.output.set_wrap_mode(Gtk.WrapMode.WORD)
-        # self.output.modify_bg(Gtk.StateType.NORMAL, Gdk.color_parse("black"))
         
         # Scroll attributes
         self.set_vexpand(True)
@@ -64,6 +63,7 @@ class TerminalOutput(Gtk.ScrolledWindow):
         
     
     def non_block_read(self, output) -> str:
+        # Black magic from SO: https://stackoverflow.com/a/17105259
         fd = output.fileno()
         fl = fcntl.fcntl(fd, fcntl.F_GETFL)
         fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)

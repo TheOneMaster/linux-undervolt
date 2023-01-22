@@ -28,7 +28,6 @@ class AdvancedWindow(MainWindow):
         
         self.topLevelWindow = self.builder.get_object("Main")
         self.topLevelWindow.connect("destroy", self.on_quit)
-        # self.destroy_signal = self.topLevelWindow.connect("destroy", Gtk.main_quit)
         
         self.logger.debug("Finished setup for main window")
         
@@ -45,22 +44,15 @@ class AdvancedWindow(MainWindow):
         term1 = TerminalOutput(box1)
         box1.add(term1)
         
-        # Run with delay so that the password prompt only shows up after the main GUI, and is focused
-        # GObject.timeout_add(1000, term1.run_command, [POWER_CONSUMPTION_SCRIPT], True)
         term1.run_command([POWER_CONSUMPTION_SCRIPT], True)
         self.logger.debug("Finished 1st tab setup")
         
         # 2nd Tab
         box2 = self.builder.get_object("current-undervolt-tab")
-        term2 = TerminalOutput(box2)
-        # term2.output.get_buffer().set_text(
-        #     "Unable to add this until I understand PolKit or I'll be spammed with sudo requests."
-        #     " If someone wants to work on this and help me out or pull request this functionality, that'd be great.")       
+        term2 = TerminalOutput(box2)      
         box2.add(term2)
         
-        # GObject.timeout_add(5000, term2.run_command, [UNDERVOLT_READOUT_SCRIPT], True)
         term2.run_command([UNDERVOLT_READOUT_SCRIPT], True)
-        
         self.logger.debug("Finished 2nd tab setup")
         
         self.terminals.append(term1)
@@ -70,7 +62,7 @@ class AdvancedWindow(MainWindow):
         term.run_command(command)
         return False
 
-    def on_quit(self, action) -> None:
+    def on_quit(self, _) -> None:
         for terminal in self.terminals:
             terminal.end_command()
 

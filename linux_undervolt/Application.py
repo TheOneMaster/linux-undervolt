@@ -53,7 +53,8 @@ class Application(Gtk.Application):
     
     def do_activate(self) -> None:
         if not self.window:
-            self.window = self.main_windows[self.window_state](self.config)
+            window_type = self.main_windows[self.window_state]
+            self.window = window_type(self.config)
             window = self.window.topLevelWindow
             window.set_application(self)
             window.show_all()
