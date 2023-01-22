@@ -22,7 +22,8 @@ setup(
     },
     data_files=[
         ('share/applications/', ['theonemaster-linux_undervolt.desktop']),
-        ('/opt/linux-undervolt', ['linux_undervolt/config.py'])
+        ('/opt/linux-undervolt', ['linux_undervolt/config.py']),
+        ('share/polkit-1/actions/', ['linux_undervolt/misc/org.theonemaster.linux-undervolt.policy'])
     ],
     classifiers=[
         "License :: OSI Approved :: GPLv2 License"

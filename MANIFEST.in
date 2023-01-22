@@ -1,2 +1,6 @@
-include linux_undervolt/GUI.glade
-include linux_undervolt/powersave.sh
+include linux_undervolt/glade_files/GUI.glade
+include linux_undervolt/glade_files/main_adv.glade
+include linux_undervolt/glade_files/powersave.sh
+include linux_undervolt/Scripts/power-consumption
+include linux_undervolt/Scripts/undervolt-readout
+include linux_undervolt/Scripts/exit-terminal

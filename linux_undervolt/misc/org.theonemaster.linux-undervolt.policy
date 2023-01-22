@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
+<policyconfig>
+
+  <action id="org.theonemaster.linux_undervolt">
+    <message>Authentication is required to run the Undervolt Tool</message>
+    <icon_name>wihotspot</icon_name>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/bin/linux-undervolt</annotate>
+    <annotate key="org.freedesktop.policykit.allow_gui">true</annotate>
+  </action>
+
+  <action id="org.theonemaster.linux_undervolt.power-consumption">
+    <message>Authentication is required to run the Undervolt Tool</message>
+    <icon_name>wihotspot</icon_name>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/lib/python3/dist-packages/linux_undervolt/Scripts/power-consumption</annotate>
+    <!-- <annotate key="org.freedesktop.policykit.allow_gui">true</annotate> -->
+  </action>
+
+  <action id="org.theonemaster.linux_undervolt.undervolt-readout">
+    <message>Authentication is required to run the Undervolt Tool</message>
+    <icon_name>wihotspot</icon_name>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/lib/python3/dist-packages/linux_undervolt/Scripts/undervolt-readout</annotate>
+    <!-- <annotate key="org.freedesktop.policykit.allow_gui">true</annotate> -->
+  </action>
+  
+  <action id="org.theonemaster.linux_undervolt.exit-terminal">
+    <message>Authentication is required to run the Undervolt Tool</message>
+    <icon_name>wihotspot</icon_name>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/lib/python3/dist-packages/linux_undervolt/Scripts/exit-terminal</annotate>
+    <!-- <annotate key="org.freedesktop.policykit.allow_gui">true</annotate> -->
+  </action>
+
+</policyconfig>

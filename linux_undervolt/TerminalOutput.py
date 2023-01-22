@@ -1,14 +1,16 @@
-from typing import Optional, List
-
 import gi
+
 gi.require_version("Gtk", "3.0")
 
-from gi.repository import Gtk, GObject, Gdk
-
+import fcntl
 import logging
 import os
 import subprocess
-import fcntl
+
+from gi.repository import GObject, Gtk
+
+from .constants import EXIT_TERMINAL_SCRIPT
+
 
 class TerminalOutput(Gtk.ScrolledWindow):
     
@@ -19,6 +21,8 @@ class TerminalOutput(Gtk.ScrolledWindow):
         
         self.__parent = parent
         self.__lastCommand = None
+        self.sudo = False
+        self.timer = None
         
         self.output = Gtk.TextView()
         
@@ -38,14 +42,23 @@ class TerminalOutput(Gtk.ScrolledWindow):
         self.add_with_viewport(self.output)
         self.logger.info("Finished setup for Terminal Output")
         # self.output.get_buffer().set_text("Testing")
+     
+    def create_command_list(self, command_list: list[str]):
+        new_com_list = command_list.copy()
+        if self.sudo:
+            new_com_list.insert(0, 'pkexec')
         
-    def runCommand(self, command: str, args: Optional[List[str]]=None):
-        self.logger.info(f"Running command: {command} {args}")
-        if args is None:
-            args = []
+        return new_com_list
         
-        self.__lastCommand = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-        GObject.timeout_add(1000, lambda: self.update_terminal(self.__lastCommand.stdout))
+    def run_command(self, command: list[str], sudo=False): 
+        self.sudo = sudo           
+        command_list = self.create_command_list(command)
+        
+        self.logger.info(f"Running command: {command_list}")
+        # print(command_list)
+        
+        self.__lastCommand = subprocess.Popen(command_list, stdout=subprocess.PIPE, shell=False, start_new_session=True)
+        self.timer = GObject.timeout_add(1000, self.update_terminal, self.__lastCommand.stdout)
         self.logger.info(f"Terminal with command '{command}' added")
         return False
         
@@ -64,6 +77,16 @@ class TerminalOutput(Gtk.ScrolledWindow):
         return self.__lastCommand.poll() is None
     
     def end_command(self) -> None:
-        if self.__lastCommand is not None:
-            self.__lastCommand.terminate()
+        if (self.__lastCommand is not None) and (self.__lastCommand.poll() is None):
+            pid = self.__lastCommand.pid
+            pgid = os.getpgid(pid)
+            command_list = [EXIT_TERMINAL_SCRIPT, str(pgid)]
+            if self.sudo:
+                command_list.insert(0, "pkexec")
+            
+            self.logger.info(f"End Command: {command_list}")
+            subprocess.run(command_list, shell=False)
+            
+            self.__lastCommand.communicate()
+            GObject.source_remove(self.timer)
         
